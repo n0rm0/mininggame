@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>Ore Rush</title>
+<title>Blanket Hunt</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
@@ -62,7 +62,6 @@ input,select{font-family:inherit;}
 }
 .stat-row{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:600;}
 .stat-row.small{font-size:13px;font-weight:500;color:var(--bone-dim);margin-top:2px;}
-.stat-row.tiny{font-size:11px;color:var(--bone-dim);opacity:0.75;margin-top:4px;}
 .stat-icon{font-size:14px;}
 
 .shop-btn{
@@ -74,33 +73,54 @@ input,select{font-family:inherit;}
 }
 .shop-btn:active{transform:translateY(2px);box-shadow:0 0 0 #8a5e1f;}
 
-.mine-area{
+/* ---------- HUNT AREA ---------- */
+.hunt-area{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:10px;position:relative;min-height:300px;
+  gap:20px;position:relative;min-height:300px;padding:0 16px;
 }
-.rock-wrap{width:clamp(150px,38vw,250px);position:relative;touch-action:manipulation;}
-.rock-svg{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.5));}
-.rock-svg{cursor:pointer;user-select:none;}
-#rock-group{transform-origin:100px 100px;transition:transform 0.08s;}
-.rock-wrap.cooling .rock-svg{opacity:0.85;}
-.crack{stroke:#0c0805;stroke-width:3;fill:none;stroke-linecap:round;opacity:0;transition:opacity 0.2s;}
-.crack.show{opacity:0.9;}
-.rock-wrap.shake #rock-group{animation:shake 0.16s ease;}
-#rock-group.breaking{animation:rockBreak 0.46s ease forwards;}
-@keyframes shake{
-  0%{transform:translateX(0);}
-  25%{transform:translateX(-4px) rotate(-2deg);}
-  50%{transform:translateX(4px) rotate(2deg);}
-  75%{transform:translateX(-2px);}
-  100%{transform:translateX(0);}
+.hunt-hero{
+  text-align:center;
 }
-@keyframes rockBreak{
-  0%{transform:scale(1) rotate(0);opacity:1;}
-  60%{transform:scale(1.18) rotate(6deg);opacity:1;}
-  100%{transform:scale(0.2) rotate(18deg);opacity:0;}
+.hunt-emoji{
+  font-size:80px;
+  line-height:1;
+  animation:float 3s ease-in-out infinite;
+  display:block;
+  margin-bottom:12px;
+  filter:drop-shadow(0 6px 18px rgba(227,168,59,0.25));
 }
-.hp-bar{width:clamp(150px,38vw,250px);height:10px;border-radius:6px;background:#150f0a;border:1px solid var(--stone-line);overflow:hidden;}
-.hp-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-bright));width:100%;transition:width 0.15s ease;}
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
+.hunt-headline{
+  font-family:'Cinzel',serif;
+  font-size:22px;
+  font-weight:700;
+  color:var(--gold-bright);
+  margin-bottom:6px;
+  letter-spacing:0.5px;
+}
+.hunt-sub{
+  font-size:13px;
+  color:var(--bone-dim);
+  max-width:280px;
+  margin:0 auto;
+  line-height:1.5;
+}
+
+/* coin multiplier hint */
+.coin-guide{
+  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:340px;
+}
+.coin-tier{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(42,31,22,0.7);border:1px solid var(--stone-line);
+  border-radius:8px;padding:6px 10px;font-size:12px;
+}
+.coin-tier-icon{font-size:18px;}
+.coin-tier-label{color:var(--bone-dim);}
+.coin-tier-amt{color:var(--gold-bright);font-weight:700;}
 
 .popups-layer{position:absolute;inset:0;pointer-events:none;overflow:visible;}
 .popup{
@@ -135,13 +155,13 @@ input,select{font-family:inherit;}
 .badge-time{opacity:0.8;font-weight:500;font-size:11px;}
 .badge-empty{font-size:11px;color:var(--bone-dim);opacity:0.6;font-style:italic;}
 
-.sell-btn{
+.scan-btn{
   position:absolute;bottom:max(20px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:5;
-  background:var(--stone-mid);border:1px solid var(--gold);color:var(--gold-bright);
-  font-weight:700;font-size:15px;padding:13px 26px;border-radius:30px;
-  box-shadow:0 4px 14px rgba(0,0,0,0.45);
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+  color:#2a1d10;font-weight:700;font-size:16px;padding:15px 32px;border-radius:30px;
+  box-shadow:0 4px 14px rgba(227,168,59,0.35);white-space:nowrap;
 }
-.sell-btn:active{transform:translateX(-50%) translateY(2px);}
+.scan-btn:active{transform:translateX(-50%) translateY(2px);}
 
 @media (max-width:480px){
   .panel{padding:8px 10px;}
@@ -222,7 +242,7 @@ input,select{font-family:inherit;}
 }
 .reset-btn:hover{opacity:1;}
 
-/* ---------- SELL MODAL ---------- */
+/* ---------- SCAN MODAL ---------- */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(10,7,5,0.88);display:none;
   align-items:center;justify-content:center;z-index:50;padding:16px;
@@ -232,7 +252,8 @@ input,select{font-family:inherit;}
   background:var(--stone-mid);border:1px solid var(--stone-line);border-radius:14px;
   padding:20px;width:100%;max-width:420px;position:relative;max-height:90dvh;overflow-y:auto;
 }
-.modal-card h2{font-family:'Cinzel',serif;font-size:18px;color:var(--gold-bright);margin:0 0 14px;text-align:center;}
+.modal-card h2{font-family:'Cinzel',serif;font-size:18px;color:var(--gold-bright);margin:0 0 6px;text-align:center;}
+.modal-card .modal-hint{font-size:12px;color:var(--bone-dim);text-align:center;margin-bottom:14px;}
 .modal-close{position:absolute;top:10px;right:12px;font-size:18px;color:var(--bone-dim);}
 .modal-close:hover{color:var(--bone);}
 .sell-video-wrap{display:none;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px;aspect-ratio:4/3;}
@@ -251,7 +272,7 @@ input,select{font-family:inherit;}
 .sell-error{display:none;text-align:center;font-size:13px;color:var(--crimson);margin-top:10px;}
 .sell-result{display:none;text-align:center;margin-top:14px;}
 .appraisal-item{font-size:15px;font-weight:600;margin-bottom:4px;}
-.appraisal-value{font-size:24px;font-weight:700;color:var(--gold-bright);margin-bottom:4px;}
+.appraisal-value{font-size:28px;font-weight:700;color:var(--gold-bright);margin-bottom:4px;}
 .appraisal-blurb{font-size:12px;color:var(--bone-dim);margin-bottom:14px;}
 .sell-result-actions{display:flex;gap:10px;}
 .accept-btn,.retake-btn{flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:700;}
@@ -268,7 +289,7 @@ input,select{font-family:inherit;}
 @keyframes toastOut{to{opacity:0;}}
 
 @media (prefers-reduced-motion: reduce){
-  .rock-wrap.shake #rock-group,#rock-group.breaking,.popup,.particle,.toast{animation:none !important;}
+  .hunt-emoji,.popup,.particle,.toast{animation:none !important;}
 }
 </style>
 </head>
@@ -278,37 +299,39 @@ input,select{font-family:inherit;}
   <!-- MAIN SCREEN -->
   <section id="screen-main" class="screen active">
     <div class="panel panel--stats">
-      <div class="stats-title">ORE RUSH</div>
+      <div class="stats-title">BLANKET HUNT</div>
       <div class="stat-row"><span class="stat-icon">🪙</span><span id="stat-balance">0</span></div>
-      <div class="stat-row small"><span class="stat-icon">⛏️</span>Power&nbsp;<span id="stat-power">5</span></div>
-      <div class="stat-row small"><span class="stat-icon">⏱️</span>Speed&nbsp;<span id="stat-speed">1.5</span>/s</div>
-      <div class="stat-row tiny">Rocks broken: <span id="stat-rocks">0</span></div>
+      <div class="stat-row small"><span class="stat-icon">🧸</span>Toys found: <span id="stat-toys">0</span></div>
     </div>
 
-    <button class="shop-btn" id="btn-open-shop">Shop ⛏️</button>
+    <button class="shop-btn" id="btn-open-shop">Shop 🎁</button>
 
-    <div class="mine-area">
-      <div class="rock-wrap" id="rock-wrap">
-        <svg class="rock-svg" viewBox="0 0 200 170" id="rock-svg">
-          <defs>
-            <linearGradient id="rockGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#5b4330"/>
-              <stop offset="100%" stop-color="#2a1d13"/>
-            </linearGradient>
-          </defs>
-          <g id="rock-group">
-            <polygon points="100,8 165,40 178,100 140,160 60,160 22,100 35,40" fill="url(#rockGrad)" stroke="#1c130b" stroke-width="4"/>
-            <circle cx="70" cy="55" r="5" fill="#e3a83b" opacity="0.85"/>
-            <circle cx="120" cy="90" r="4" fill="#f6c862" opacity="0.7"/>
-            <circle cx="95" cy="130" r="3.5" fill="#e3a83b" opacity="0.8"/>
-            <path id="crack1" class="crack" d="M100,8 L95,60 L130,90"/>
-            <path id="crack2" class="crack" d="M35,40 L80,95 L60,160"/>
-            <path id="crack3" class="crack" d="M178,100 L120,90 L140,160"/>
-          </g>
-        </svg>
-        <div class="popups-layer" id="popups-layer"></div>
+    <div class="hunt-area">
+      <div class="hunt-hero">
+        <span class="hunt-emoji">🧸</span>
+        <div class="hunt-headline">Find a Toy!</div>
+        <div class="hunt-sub">Dig through your blankets &amp; pillows. Find a toy, then scan it to earn coins!</div>
       </div>
-      <div class="hp-bar"><div class="hp-bar-fill" id="hp-fill"></div></div>
+
+      <div class="coin-guide">
+        <div class="coin-tier">
+          <span class="coin-tier-icon">🛏️</span>
+          <span class="coin-tier-label">Blanket</span>
+          <span class="coin-tier-amt">5–15</span>
+        </div>
+        <div class="coin-tier">
+          <span class="coin-tier-icon">🪆</span>
+          <span class="coin-tier-label">Simple toy</span>
+          <span class="coin-tier-amt">20–50</span>
+        </div>
+        <div class="coin-tier">
+          <span class="coin-tier-icon">🤖</span>
+          <span class="coin-tier-label">Complex toy</span>
+          <span class="coin-tier-amt">60–100</span>
+        </div>
+      </div>
+
+      <div class="popups-layer" id="popups-layer"></div>
     </div>
 
     <div class="panel panel--potions" id="panel-potions">
@@ -320,7 +343,7 @@ input,select{font-family:inherit;}
       <div id="effects-list"></div>
     </div>
 
-    <button class="sell-btn" id="btn-open-sell">💰 Sell Item</button>
+    <button class="scan-btn" id="btn-open-sell">📸 Scan a Toy</button>
   </section>
 
   <!-- SHOP SCREEN -->
@@ -339,8 +362,7 @@ input,select{font-family:inherit;}
     <div class="admin-form">
       <label>Stat to affect
         <select id="admin-stat">
-          <option value="damage">Mining Power</option>
-          <option value="cooldown">Mining Speed</option>
+          <option value="yield">Coin Multiplier</option>
         </select>
       </label>
       <label>Mode
@@ -361,7 +383,7 @@ input,select{font-family:inherit;}
         <input type="number" id="admin-duration" value="10" min="1" max="1440"/>
       </label>
       <label>Custom label (optional)
-        <input type="text" id="admin-label" placeholder="e.g. Cursed Pickaxe"/>
+        <input type="text" id="admin-label" placeholder="e.g. Cursed Blanket"/>
       </label>
       <button class="apply-btn" id="admin-apply-btn">Apply Effect</button>
     </div>
@@ -369,27 +391,28 @@ input,select{font-family:inherit;}
     <button class="reset-btn" id="btn-reset-game">Reset all progress</button>
   </section>
 
-  <!-- SELL MODAL -->
+  <!-- SCAN MODAL -->
   <div class="modal-overlay" id="sell-modal">
     <div class="modal-card">
       <button class="modal-close" id="btn-sell-close">✕</button>
-      <h2>Appraise an Item</h2>
+      <h2>📸 Scan Your Find</h2>
+      <p class="modal-hint">Point camera at your toy, blanket or pillow — bigger &amp; more complex = more coins!</p>
       <div class="sell-video-wrap" id="sell-video-wrap"><video id="sell-video" autoplay playsinline muted></video></div>
       <div class="sell-upload-wrap" id="sell-upload-wrap">
-        <label class="upload-label">Camera preview isn't available here — take or choose a photo instead
+        <label class="upload-label">Camera not available — take or choose a photo instead
           <input type="file" accept="image/*" capture="environment" id="sell-file-input"/>
         </label>
       </div>
-      <button class="capture-btn" id="sell-capture-btn">📸 Capture &amp; Appraise</button>
-      <div class="sell-loading" id="sell-loading">Appraising...</div>
-      <div class="sell-error" id="sell-error">Couldn't get a clear read on that — try better lighting and capture again.</div>
+      <button class="capture-btn" id="sell-capture-btn">📸 Scan &amp; Identify</button>
+      <div class="sell-loading" id="sell-loading">🔍 Identifying your find...</div>
+      <div class="sell-error" id="sell-error">Couldn't get a clear read — try better lighting and scan again.</div>
       <div class="sell-result" id="sell-result">
         <div class="appraisal-item"></div>
         <div class="appraisal-value"></div>
         <div class="appraisal-blurb"></div>
         <div class="sell-result-actions">
-          <button id="sell-accept-btn" class="accept-btn">Add to Gold</button>
-          <button id="sell-retake-btn" class="retake-btn">Retake</button>
+          <button id="sell-accept-btn" class="accept-btn">Collect Coins!</button>
+          <button id="sell-retake-btn" class="retake-btn">Rescan</button>
         </div>
       </div>
     </div>
@@ -402,19 +425,18 @@ input,select{font-family:inherit;}
 'use strict';
 
 /* ===================== CONSTANTS ===================== */
-const STORE_PLAYER='orerush:player';
-const STORE_EFFECTS='orerush:effects';
+const STORE_PLAYER='blanket:player';
+const STORE_EFFECTS='blanket:effects';
 
 const POTIONS=[
-  {id:'swift', name:'Swift Pick Potion', icon:'⚡', stat:'cooldown', multiplier:0.55, durationMin:5, baseCost:30, desc:'Mine ~45% faster'},
-  {id:'heavy', name:'Heavy Hammer Potion', icon:'💪', stat:'damage', multiplier:1.6, durationMin:5, baseCost:30, desc:'+60% mining power'},
-  {id:'lucky', name:'Lucky Vein Potion', icon:'🍀', stat:'yield', multiplier:1.5, durationMin:5, baseCost:40, desc:'+50% gold per rock'}
+  {id:'lucky', name:'Lucky Eye Potion', icon:'🍀', stat:'yield', multiplier:1.6, durationMin:5, baseCost:40, desc:'+60% coins from every scan'},
+  {id:'eagle', name:'Eagle Eye Potion', icon:'🦅', stat:'yield', multiplier:2.0, durationMin:3, baseCost:70, desc:'Double coins for 3 minutes!'},
+  {id:'gem',   name:'Gem Sense Potion', icon:'💎', stat:'yield', multiplier:1.3, durationMin:10, baseCost:30, desc:'+30% coins, lasts 10 minutes'}
 ];
 
 /* ===================== STATE ===================== */
 let player=null;
 let effects=[];
-let uiState={clickLocked:false};
 let saveTimer=null;
 let mediaStream=null;
 let cameraMode='none';
@@ -436,7 +458,7 @@ async function storageSet(key, value){
 }
 
 function defaultPlayer(){
-  return {balance:0, baseDamage:5, baseCooldown:650, rocksMined:0, rockMaxHp:40, rockHp:40, potionPurchases:{}};
+  return {balance:0, toysFound:0, potionPurchases:{}};
 }
 
 function persistPlayerNow(){
@@ -451,7 +473,6 @@ function persistPlayerDebounced(){
 /* ===================== UTIL ===================== */
 function uid(){ return Math.random().toString(36).slice(2)+Date.now().toString(36); }
 function clamp(n,min,max){ return Math.min(max,Math.max(min,n)); }
-function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
 function fmtTime(ms){
   if(ms<0) ms=0;
   const s=Math.ceil(ms/1000);
@@ -476,34 +497,17 @@ function toast(msg){
 /* ===================== EFFECTIVE STATS ===================== */
 function getEffectiveStats(){
   const now=Date.now();
-  let dmgMult=1, cdMult=1, yieldMult=1;
+  let yieldMult=1;
   effects.filter(e=>e.expiresAt>now).forEach(e=>{
-    if(e.stat==='damage') dmgMult*=e.multiplier;
-    if(e.stat==='cooldown') cdMult*=e.multiplier;
     if(e.stat==='yield') yieldMult*=e.multiplier;
   });
-  return {
-    damage: Math.max(1, Math.round(player.baseDamage*dmgMult)),
-    cooldown: clamp(Math.round(player.baseCooldown*cdMult), 90, 6000),
-    yieldMult
-  };
+  return { yieldMult };
 }
 
 /* ===================== RENDER: MAIN STATS ===================== */
 function updateStatsDisplay(){
-  const stats=getEffectiveStats();
   document.getElementById('stat-balance').textContent=player.balance;
-  document.getElementById('stat-power').textContent=stats.damage;
-  document.getElementById('stat-speed').textContent=(1000/stats.cooldown).toFixed(1);
-  document.getElementById('stat-rocks').textContent=player.rocksMined;
-  document.getElementById('hp-fill').style.width=clamp((player.rockHp/player.rockMaxHp)*100,0,100)+'%';
-  updateCracks();
-}
-function updateCracks(){
-  const pct=player.rockHp/player.rockMaxHp;
-  document.getElementById('crack1').classList.toggle('show', pct<=0.66);
-  document.getElementById('crack2').classList.toggle('show', pct<=0.36);
-  document.getElementById('crack3').classList.toggle('show', pct<=0.14);
+  document.getElementById('stat-toys').textContent=player.toysFound;
 }
 
 /* ===================== RENDER: EFFECT PANELS ===================== */
@@ -518,7 +522,7 @@ function renderEffectBadges(containerId, source, emptyText){
   el.innerHTML=list.map(e=>
     '<div class="badge"><span class="badge-icon">'+e.icon+'</span>'+
     '<span class="badge-name">'+escapeHtml(e.name)+'</span>'+
-    '<span class="badge-time">'+fmtTime(e.expiresAt-now)+'</span></div>'
+    '<span class="badge-time">'+fmtTime(e.expiresAt-Date.now())+'</span></div>'
   ).join('');
 }
 
@@ -533,7 +537,7 @@ function tickEffects(){
   if(document.getElementById('screen-admin').classList.contains('active')) renderAdminActiveList();
 }
 
-/* ===================== ROCK / MINING ===================== */
+/* ===================== COIN POPUPS ===================== */
 function spawnPopup(text){
   const layer=document.getElementById('popups-layer');
   const el=document.createElement('div');
@@ -544,60 +548,17 @@ function spawnPopup(text){
 }
 function spawnBurst(){
   const layer=document.getElementById('popups-layer');
-  for(let i=0;i<8;i++){
+  for(let i=0;i<10;i++){
     const el=document.createElement('div');
     el.className='particle';
     el.textContent='🪙';
     const angle=Math.random()*Math.PI*2;
-    const dist=40+Math.random()*50;
+    const dist=50+Math.random()*60;
     el.style.setProperty('--bx', (Math.cos(angle)*dist)+'px');
     el.style.setProperty('--by', (Math.sin(angle)*dist)+'px');
     layer.appendChild(el);
     setTimeout(()=>el.remove(), 650);
   }
-}
-
-function onRockClick(){
-  if(uiState.clickLocked) return;
-  const stats=getEffectiveStats();
-  player.rockHp-=stats.damage;
-
-  const wrap=document.getElementById('rock-wrap');
-  wrap.classList.add('shake');
-  setTimeout(()=>wrap.classList.remove('shake'), 180);
-
-  if(player.rockHp<=0){
-    breakRock(stats.yieldMult);
-  }else{
-    updateStatsDisplay();
-    persistPlayerDebounced();
-  }
-
-  uiState.clickLocked=true;
-  wrap.classList.add('cooling');
-  setTimeout(()=>{ uiState.clickLocked=false; wrap.classList.remove('cooling'); }, stats.cooldown);
-}
-
-function breakRock(yieldMult){
-  const gold=Math.max(1, Math.round(randInt(8,15)*yieldMult));
-  player.balance+=gold;
-  player.rocksMined+=1;
-  player.rockMaxHp=Math.min(400, Math.round(40*(1+player.rocksMined*0.025)));
-  player.rockHp=player.rockMaxHp;
-
-  spawnPopup('+'+gold+' 🪙');
-  spawnBurst();
-
-  const group=document.getElementById('rock-group');
-  group.classList.add('breaking');
-  setTimeout(()=>{
-    group.classList.remove('breaking');
-    updateStatsDisplay();
-  }, 460);
-
-  persistPlayerNow();
-  updateStatsDisplay();
-  renderShop();
 }
 
 /* ===================== SHOP ===================== */
@@ -626,7 +587,7 @@ function buyPotion(id){
   const p=POTIONS.find(x=>x.id===id);
   if(!p) return;
   const cost=potionCost(p);
-  if(player.balance<cost){ toast('Not enough gold — mine more or sell an item'); return; }
+  if(player.balance<cost){ toast('Not enough coins — scan more toys!'); return; }
   player.balance-=cost;
   player.potionPurchases[id]=(player.potionPurchases[id]||0)+1;
   const now=Date.now();
@@ -648,7 +609,7 @@ function buyPotion(id){
 function renderAdminSnapshot(){
   const stats=getEffectiveStats();
   document.getElementById('admin-snapshot').innerHTML=
-    '<span>🪙 '+player.balance+'</span><span>⛏️ Power '+stats.damage+'</span><span>⏱️ Speed '+(1000/stats.cooldown).toFixed(1)+'/s</span><span>Rocks '+player.rocksMined+'</span>';
+    '<span>🪙 '+player.balance+'</span><span>🧸 Toys '+player.toysFound+'</span><span>✨ Multiplier ×'+stats.yieldMult.toFixed(2)+'</span>';
 }
 function renderAdminActiveList(){
   renderAdminSnapshot();
@@ -671,22 +632,15 @@ function cancelEffect(id){
   tickEffects();
 }
 function applyAdminEffect(){
-  const stat=document.getElementById('admin-stat').value;
+  const stat='yield';
   const mode=document.getElementById('admin-mode').value;
   const pct=clamp(Number(document.getElementById('admin-pct').value)||30, 1, 95);
   const minutes=clamp(Number(document.getElementById('admin-duration').value)||10, 1, 1440);
-  let multiplier;
-  if(stat==='damage'){
-    multiplier= mode==='curse' ? (1-pct/100) : (1+pct/100);
-  }else{
-    multiplier= mode==='curse' ? (1/(1-pct/100)) : Math.max(0.1, 1-pct/100);
-  }
-  const defaultLabel = mode==='curse'
-    ? (stat==='damage' ? 'Weaker Pickaxe' : 'Slower Mining')
-    : (stat==='damage' ? 'Power Surge' : 'Speed Boost');
+  const multiplier= mode==='curse' ? (1-pct/100) : (1+pct/100);
+  const defaultLabel = mode==='curse' ? 'Coin Curse' : 'Coin Blessing';
   const labelInput=document.getElementById('admin-label');
   const label=(labelInput.value||'').trim() || (defaultLabel+' ('+(mode==='curse'?'-':'+')+pct+'%)');
-  const icon = stat==='damage' ? (mode==='curse'?'💀':'💪') : (mode==='curse'?'🐌':'⚡');
+  const icon = mode==='curse' ? '💀' : '✨';
 
   effects.push({
     id:uid(), source:'admin', name:label, icon, stat, multiplier,
@@ -716,7 +670,7 @@ function showScreen(name){
   if(name==='admin') renderAdminActiveList();
 }
 
-/* ===================== SELL / APPRAISAL ===================== */
+/* ===================== SCAN / APPRAISAL ===================== */
 function resetSellUI(){
   document.getElementById('sell-result').style.display='none';
   document.getElementById('sell-error').style.display='none';
@@ -762,13 +716,21 @@ function captureToBase64(sourceEl, maxDim){
   ctx.drawImage(sourceEl, 0, 0, canvas.width, canvas.height);
   return canvas.toDataURL('image/jpeg', 0.82).split(',')[1];
 }
+
 async function appraiseImage(base64){
-  const prompt='You are appraising a real-world object for a playful kids\' mining-game economy (not a real financial appraisal). '+
-    'Look only at the physical object being shown to the camera and ignore any people in the frame. '+
-    'Estimate a fun in-game gold value between 5 and 100 based on the object\'s apparent size and complexity '+
-    '(bigger or more intricate items like locks, electronics, or tools should be worth more than small simple soft items like a plain pillow or sock). '+
-    'Respond with ONLY raw JSON, no markdown formatting, no code fences, in exactly this shape: '+
-    '{"item":"short name of what you see","value":<integer 5-100>,"blurb":"one short playful sentence about the find"}';
+  const prompt=
+    'You are the coin-reward judge for a kids treasure-hunt game. '+
+    'The player is scanning something they found hidden in their blankets or pillows at home. '+
+    'Ignore any people in the frame. '+
+    'Judge the object on TWO things: (1) what TYPE it is, and (2) how COMPLEX and BIG it appears. '+
+    'Scoring rules: '+
+    '- Plain blanket, pillow, or cushion (simple, soft, no features): 5–15 coins. '+
+    '- Simple toy (small, single-piece, no moving parts — e.g. a rubber duck, a small ball, a basic stuffed animal): 20–45 coins. '+
+    '- Medium toy (some detail, multiple parts or features — e.g. a doll, action figure, plush with accessories): 46–70 coins. '+
+    '- Complex toy (many parts, electronic, mechanical, or very large — e.g. a robot, building set, remote-control vehicle, game controller): 71–100 coins. '+
+    'Respond with ONLY raw JSON, no markdown, no code fences, exactly: '+
+    '{"item":"short name of what you see","value":<integer 5-100>,"blurb":"one short fun sentence about the discovery","type":"blanket|simple_toy|medium_toy|complex_toy"}';
+
   const res=await fetch('https://api.anthropic.com/v1/messages', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
@@ -787,9 +749,13 @@ async function appraiseImage(base64){
   const cleaned=textBlock.text.replace(/```json|```/g,'').trim();
   const parsed=JSON.parse(cleaned);
   if(typeof parsed.value!=='number') throw new Error('Bad value');
-  parsed.value=clamp(Math.round(parsed.value),1,200);
+
+  // Apply active yield multiplier
+  const stats=getEffectiveStats();
+  parsed.value=clamp(Math.round(parsed.value * stats.yieldMult), 1, 500);
   return parsed;
 }
+
 async function runAppraisal(base64){
   document.getElementById('sell-loading').style.display='block';
   document.getElementById('sell-error').style.display='none';
@@ -798,7 +764,7 @@ async function runAppraisal(base64){
     const result=await appraiseImage(base64);
     pendingAppraisal=result;
     document.getElementById('sell-result').style.display='block';
-    document.querySelector('#sell-result .appraisal-item').textContent=result.item||'Mystery item';
+    document.querySelector('#sell-result .appraisal-item').textContent=result.item||'Mystery find';
     document.querySelector('#sell-result .appraisal-value').textContent='+'+result.value+' 🪙';
     document.querySelector('#sell-result .appraisal-blurb').textContent=result.blurb||'';
   }catch(err){
@@ -834,7 +800,6 @@ function renderAll(){
 }
 
 function wireEvents(){
-  document.getElementById('rock-svg').addEventListener('click', onRockClick);
   document.getElementById('btn-open-shop').addEventListener('click', ()=>showScreen('shop'));
   document.getElementById('btn-shop-back').addEventListener('click', ()=>showScreen('main'));
   document.getElementById('btn-open-admin').addEventListener('click', ()=>showScreen('admin'));
@@ -869,10 +834,13 @@ function wireEvents(){
   document.getElementById('sell-accept-btn').addEventListener('click', ()=>{
     if(pendingAppraisal){
       player.balance+=pendingAppraisal.value;
+      player.toysFound+=1;
       persistPlayerNow();
       updateStatsDisplay();
       renderShop();
-      toast('Added '+pendingAppraisal.value+' gold!');
+      spawnPopup('+'+pendingAppraisal.value+' 🪙');
+      spawnBurst();
+      toast('Found '+pendingAppraisal.item+'! +'+pendingAppraisal.value+' coins!');
     }
     closeSellModal();
   });
@@ -881,8 +849,7 @@ function wireEvents(){
 
 async function init(){
   player=await storageGet(STORE_PLAYER, null) || defaultPlayer();
-  if(player.rockMaxHp==null) player.rockMaxHp=40;
-  if(player.rockHp==null) player.rockHp=player.rockMaxHp;
+  if(player.toysFound==null) player.toysFound=0;
   if(player.potionPurchases==null) player.potionPurchases={};
   effects=await storageGet(STORE_EFFECTS, null) || [];
 
