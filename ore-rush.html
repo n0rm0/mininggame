@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Ore Rush</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root{
+  --stone-dark:#1a130f;
+  --stone-mid:#2a1f16;
+  --stone-line:#4a3526;
+  --gold:#e3a83b;
+  --gold-bright:#f6c862;
+  --teal:#4fd1c5;
+  --crimson:#c0524a;
+  --bone:#ede3d3;
+  --bone-dim:#bfb19c;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  font-family:'Space Grotesk',sans-serif;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(227,168,59,0.07), transparent 38%),
+    radial-gradient(circle at 82% 88%, rgba(79,209,197,0.05), transparent 42%),
+    var(--stone-dark);
+  color:var(--bone);
+  min-height:100dvh;
+  overflow-x:hidden;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input,select{font-family:inherit;}
+:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px;}
+
+#app{position:relative;width:100%;min-height:100dvh;}
+
+.screen{display:none;position:relative;min-height:100dvh;padding:16px;padding-top:max(16px, env(safe-area-inset-top));padding-bottom:max(16px, env(safe-area-inset-bottom));}
+.screen.active{display:flex;flex-direction:column;}
+
+/* ---------- MAIN SCREEN ---------- */
+#screen-main{min-height:100dvh;}
+
+.panel{
+  background:rgba(42,31,22,0.82);
+  border:1px solid var(--stone-line);
+  border-radius:10px;
+  padding:10px 14px;
+  backdrop-filter:blur(2px);
+}
+
+.panel--stats{position:absolute;top:max(16px,env(safe-area-inset-top));left:16px;z-index:5;}
+.stats-title{
+  font-family:'Cinzel',serif;
+  font-weight:700;
+  letter-spacing:2px;
+  font-size:13px;
+  color:var(--gold-bright);
+  margin-bottom:6px;
+}
+.stat-row{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:600;}
+.stat-row.small{font-size:13px;font-weight:500;color:var(--bone-dim);margin-top:2px;}
+.stat-row.tiny{font-size:11px;color:var(--bone-dim);opacity:0.75;margin-top:4px;}
+.stat-icon{font-size:14px;}
+
+.shop-btn{
+  position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;z-index:5;
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+  color:#2a1d10;font-weight:700;font-size:14px;
+  padding:10px 16px;border-radius:9px;
+  box-shadow:0 2px 0 #8a5e1f, 0 4px 10px rgba(0,0,0,0.4);
+}
+.shop-btn:active{transform:translateY(2px);box-shadow:0 0 0 #8a5e1f;}
+
+.mine-area{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;position:relative;min-height:300px;
+}
+.rock-wrap{width:clamp(150px,38vw,250px);position:relative;touch-action:manipulation;}
+.rock-svg{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.5));}
+.rock-svg{cursor:pointer;user-select:none;}
+#rock-group{transform-origin:100px 100px;transition:transform 0.08s;}
+.rock-wrap.cooling .rock-svg{opacity:0.85;}
+.crack{stroke:#0c0805;stroke-width:3;fill:none;stroke-linecap:round;opacity:0;transition:opacity 0.2s;}
+.crack.show{opacity:0.9;}
+.rock-wrap.shake #rock-group{animation:shake 0.16s ease;}
+#rock-group.breaking{animation:rockBreak 0.46s ease forwards;}
+@keyframes shake{
+  0%{transform:translateX(0);}
+  25%{transform:translateX(-4px) rotate(-2deg);}
+  50%{transform:translateX(4px) rotate(2deg);}
+  75%{transform:translateX(-2px);}
+  100%{transform:translateX(0);}
+}
+@keyframes rockBreak{
+  0%{transform:scale(1) rotate(0);opacity:1;}
+  60%{transform:scale(1.18) rotate(6deg);opacity:1;}
+  100%{transform:scale(0.2) rotate(18deg);opacity:0;}
+}
+.hp-bar{width:clamp(150px,38vw,250px);height:10px;border-radius:6px;background:#150f0a;border:1px solid var(--stone-line);overflow:hidden;}
+.hp-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-bright));width:100%;transition:width 0.15s ease;}
+
+.popups-layer{position:absolute;inset:0;pointer-events:none;overflow:visible;}
+.popup{
+  position:absolute;left:50%;top:38%;transform:translate(-50%,0);
+  font-weight:700;font-size:20px;color:var(--gold-bright);
+  text-shadow:0 2px 4px rgba(0,0,0,0.6);
+  animation:floatUp 0.9s ease forwards;
+}
+@keyframes floatUp{
+  0%{opacity:0;transform:translate(-50%,0) scale(0.8);}
+  15%{opacity:1;transform:translate(-50%,-10px) scale(1.05);}
+  100%{opacity:0;transform:translate(-50%,-70px) scale(1);}
+}
+.particle{
+  position:absolute;left:50%;top:42%;font-size:16px;
+  animation:burst 0.6s ease-out forwards;
+}
+@keyframes burst{
+  0%{opacity:1;transform:translate(-50%,-50%) translate(0,0) scale(1);}
+  100%{opacity:0;transform:translate(-50%,-50%) translate(var(--bx),var(--by)) scale(0.6);}
+}
+
+.panel--potions{position:absolute;bottom:max(92px,calc(92px + env(safe-area-inset-bottom)));left:16px;max-width:44%;z-index:4;}
+.panel--effects{position:absolute;bottom:max(92px,calc(92px + env(safe-area-inset-bottom)));right:16px;max-width:44%;z-index:4;text-align:right;}
+.panel-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--bone-dim);margin-bottom:6px;}
+.badge{
+  display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  padding:5px 8px;border-radius:7px;margin-bottom:5px;
+  background:rgba(20,15,10,0.6);border-left:3px solid var(--teal);
+}
+.panel--effects .badge{border-left:none;border-right:3px solid var(--crimson);flex-direction:row-reverse;}
+.badge-time{opacity:0.8;font-weight:500;font-size:11px;}
+.badge-empty{font-size:11px;color:var(--bone-dim);opacity:0.6;font-style:italic;}
+
+.sell-btn{
+  position:absolute;bottom:max(20px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:5;
+  background:var(--stone-mid);border:1px solid var(--gold);color:var(--gold-bright);
+  font-weight:700;font-size:15px;padding:13px 26px;border-radius:30px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.45);
+}
+.sell-btn:active{transform:translateX(-50%) translateY(2px);}
+
+@media (max-width:480px){
+  .panel{padding:8px 10px;}
+  .stat-row{font-size:14px;}
+  .panel--potions,.panel--effects{max-width:46%;bottom:84px;}
+  .badge{font-size:11px;}
+}
+
+/* ---------- SHOP / ADMIN SCREENS ---------- */
+.back-btn{
+  position:absolute;top:max(16px,env(safe-area-inset-top));left:16px;
+  font-size:14px;font-weight:600;color:var(--bone-dim);
+  padding:8px 10px;border-radius:8px;
+}
+.back-btn:hover{color:var(--bone);}
+.screen-title{
+  font-family:'Cinzel',serif;font-size:26px;font-weight:700;
+  text-align:center;color:var(--gold-bright);margin:50px 0 24px;letter-spacing:1px;
+}
+.admin-title{color:var(--crimson);}
+
+.potion-grid{
+  display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:760px;margin:0 auto;width:100%;
+}
+.potion-card{
+  width:200px;background:var(--stone-mid);border:1px solid var(--stone-line);
+  border-radius:12px;padding:16px;text-align:center;transition:transform 0.12s, border-color 0.12s;
+}
+.potion-card:hover{transform:translateY(-3px);border-color:var(--gold);}
+.potion-card.unaffordable{opacity:0.55;}
+.potion-icon{font-size:30px;margin-bottom:6px;}
+.potion-name{font-weight:700;font-size:15px;margin-bottom:4px;}
+.potion-desc{font-size:12px;color:var(--bone-dim);margin-bottom:4px;min-height:32px;}
+.potion-duration{font-size:11px;color:var(--teal);margin-bottom:10px;}
+.potion-buy{
+  width:100%;background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+  color:#2a1d10;font-weight:700;padding:9px;border-radius:8px;font-size:14px;
+}
+.potion-card.unaffordable .potion-buy{background:#5a4a35;color:#bba;}
+
+.admin-trigger{
+  position:fixed;bottom:10px;left:10px;width:18px;height:18px;
+  border-radius:50%;background:var(--crimson);opacity:0.22;font-size:10px;
+  display:flex;align-items:center;justify-content:center;z-index:9;
+}
+.admin-trigger:hover{opacity:0.6;}
+
+.admin-snapshot{
+  max-width:520px;margin:0 auto 18px;background:var(--stone-mid);border:1px solid var(--stone-line);
+  border-radius:10px;padding:10px 16px;font-size:13px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;
+}
+.admin-form{
+  max-width:420px;margin:0 auto;background:var(--stone-mid);border:1px solid var(--stone-line);
+  border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px;
+}
+.admin-form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--bone-dim);}
+.admin-form select,.admin-form input[type=number],.admin-form input[type=text]{
+  background:#150f0a;border:1px solid var(--stone-line);color:var(--bone);
+  padding:8px 10px;border-radius:7px;font-size:14px;
+}
+.pct-presets{display:flex;gap:6px;margin-bottom:6px;}
+.pct-btn{flex:1;background:#150f0a;border:1px solid var(--stone-line);border-radius:7px;padding:6px;font-size:11px;color:var(--bone-dim);}
+.pct-btn:hover{border-color:var(--crimson);color:var(--bone);}
+.apply-btn{
+  background:linear-gradient(180deg,#d16a5f,var(--crimson));color:#fff;font-weight:700;
+  padding:11px;border-radius:8px;font-size:14px;margin-top:4px;
+}
+.admin-active-list{max-width:420px;margin:18px auto 0;display:flex;flex-direction:column;gap:8px;}
+.admin-effect-row{
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  background:var(--stone-mid);border:1px solid var(--stone-line);border-radius:8px;padding:8px 12px;font-size:12px;
+}
+.admin-effect-row.is-potion{border-left:3px solid var(--teal);}
+.admin-effect-row.is-admin{border-left:3px solid var(--crimson);}
+.cancel-btn{font-size:11px;color:var(--crimson);text-decoration:underline;}
+.reset-btn{
+  display:block;margin:30px auto 0;font-size:12px;color:var(--bone-dim);opacity:0.6;text-decoration:underline;
+}
+.reset-btn:hover{opacity:1;}
+
+/* ---------- SELL MODAL ---------- */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(10,7,5,0.88);display:none;
+  align-items:center;justify-content:center;z-index:50;padding:16px;
+}
+.modal-overlay.open{display:flex;}
+.modal-card{
+  background:var(--stone-mid);border:1px solid var(--stone-line);border-radius:14px;
+  padding:20px;width:100%;max-width:420px;position:relative;max-height:90dvh;overflow-y:auto;
+}
+.modal-card h2{font-family:'Cinzel',serif;font-size:18px;color:var(--gold-bright);margin:0 0 14px;text-align:center;}
+.modal-close{position:absolute;top:10px;right:12px;font-size:18px;color:var(--bone-dim);}
+.modal-close:hover{color:var(--bone);}
+.sell-video-wrap{display:none;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px;aspect-ratio:4/3;}
+.sell-video-wrap video{width:100%;height:100%;object-fit:cover;}
+.sell-upload-wrap{display:none;margin-bottom:12px;text-align:center;}
+.upload-label{
+  display:block;border:1px dashed var(--stone-line);border-radius:10px;padding:24px;
+  font-size:13px;color:var(--bone-dim);cursor:pointer;
+}
+.upload-label input{display:block;margin:10px auto 0;}
+.capture-btn{
+  width:100%;background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#2a1d10;
+  font-weight:700;padding:12px;border-radius:9px;font-size:14px;
+}
+.sell-loading{display:none;text-align:center;font-size:13px;color:var(--teal);margin-top:10px;}
+.sell-error{display:none;text-align:center;font-size:13px;color:var(--crimson);margin-top:10px;}
+.sell-result{display:none;text-align:center;margin-top:14px;}
+.appraisal-item{font-size:15px;font-weight:600;margin-bottom:4px;}
+.appraisal-value{font-size:24px;font-weight:700;color:var(--gold-bright);margin-bottom:4px;}
+.appraisal-blurb{font-size:12px;color:var(--bone-dim);margin-bottom:14px;}
+.sell-result-actions{display:flex;gap:10px;}
+.accept-btn,.retake-btn{flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:700;}
+.accept-btn{background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#2a1d10;}
+.retake-btn{background:#150f0a;border:1px solid var(--stone-line);color:var(--bone-dim);}
+
+/* ---------- TOASTS ---------- */
+.toast-layer{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;}
+.toast{
+  background:rgba(20,15,10,0.95);border:1px solid var(--stone-line);color:var(--bone);
+  font-size:12px;padding:8px 16px;border-radius:20px;animation:toastIn 0.25s ease, toastOut 0.3s ease 1.9s forwards;
+}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes toastOut{to{opacity:0;}}
+
+@media (prefers-reduced-motion: reduce){
+  .rock-wrap.shake #rock-group,#rock-group.breaking,.popup,.particle,.toast{animation:none !important;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- MAIN SCREEN -->
+  <section id="screen-main" class="screen active">
+    <div class="panel panel--stats">
+      <div class="stats-title">ORE RUSH</div>
+      <div class="stat-row"><span class="stat-icon">🪙</span><span id="stat-balance">0</span></div>
+      <div class="stat-row small"><span class="stat-icon">⛏️</span>Power&nbsp;<span id="stat-power">5</span></div>
+      <div class="stat-row small"><span class="stat-icon">⏱️</span>Speed&nbsp;<span id="stat-speed">1.5</span>/s</div>
+      <div class="stat-row tiny">Rocks broken: <span id="stat-rocks">0</span></div>
+    </div>
+
+    <button class="shop-btn" id="btn-open-shop">Shop ⛏️</button>
+
+    <div class="mine-area">
+      <div class="rock-wrap" id="rock-wrap">
+        <svg class="rock-svg" viewBox="0 0 200 170" id="rock-svg">
+          <defs>
+            <linearGradient id="rockGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#5b4330"/>
+              <stop offset="100%" stop-color="#2a1d13"/>
+            </linearGradient>
+          </defs>
+          <g id="rock-group">
+            <polygon points="100,8 165,40 178,100 140,160 60,160 22,100 35,40" fill="url(#rockGrad)" stroke="#1c130b" stroke-width="4"/>
+            <circle cx="70" cy="55" r="5" fill="#e3a83b" opacity="0.85"/>
+            <circle cx="120" cy="90" r="4" fill="#f6c862" opacity="0.7"/>
+            <circle cx="95" cy="130" r="3.5" fill="#e3a83b" opacity="0.8"/>
+            <path id="crack1" class="crack" d="M100,8 L95,60 L130,90"/>
+            <path id="crack2" class="crack" d="M35,40 L80,95 L60,160"/>
+            <path id="crack3" class="crack" d="M178,100 L120,90 L140,160"/>
+          </g>
+        </svg>
+        <div class="popups-layer" id="popups-layer"></div>
+      </div>
+      <div class="hp-bar"><div class="hp-bar-fill" id="hp-fill"></div></div>
+    </div>
+
+    <div class="panel panel--potions" id="panel-potions">
+      <div class="panel-label">Potions</div>
+      <div id="potions-list"></div>
+    </div>
+    <div class="panel panel--effects" id="panel-effects">
+      <div class="panel-label">Effects</div>
+      <div id="effects-list"></div>
+    </div>
+
+    <button class="sell-btn" id="btn-open-sell">💰 Sell Item</button>
+  </section>
+
+  <!-- SHOP SCREEN -->
+  <section id="screen-shop" class="screen">
+    <button class="back-btn" id="btn-shop-back">← Back</button>
+    <h1 class="screen-title">Shop</h1>
+    <div class="potion-grid" id="potion-grid"></div>
+    <button class="admin-trigger" id="btn-open-admin" aria-label="admin">⚙</button>
+  </section>
+
+  <!-- ADMIN SCREEN -->
+  <section id="screen-admin" class="screen">
+    <button class="back-btn" id="btn-admin-back">← Back</button>
+    <h1 class="screen-title admin-title">Curse Console</h1>
+    <div class="admin-snapshot" id="admin-snapshot"></div>
+    <div class="admin-form">
+      <label>Stat to affect
+        <select id="admin-stat">
+          <option value="damage">Mining Power</option>
+          <option value="cooldown">Mining Speed</option>
+        </select>
+      </label>
+      <label>Mode
+        <select id="admin-mode">
+          <option value="curse">Curse (bad)</option>
+          <option value="blessing">Blessing (good)</option>
+        </select>
+      </label>
+      <label>Strength
+        <div class="pct-presets">
+          <button type="button" class="pct-btn" data-pct="20">Mild · 20%</button>
+          <button type="button" class="pct-btn" data-pct="50">Strong · 50%</button>
+          <button type="button" class="pct-btn" data-pct="75">Severe · 75%</button>
+        </div>
+        <input type="number" id="admin-pct" value="30" min="1" max="95"/>
+      </label>
+      <label>Duration (minutes)
+        <input type="number" id="admin-duration" value="10" min="1" max="1440"/>
+      </label>
+      <label>Custom label (optional)
+        <input type="text" id="admin-label" placeholder="e.g. Cursed Pickaxe"/>
+      </label>
+      <button class="apply-btn" id="admin-apply-btn">Apply Effect</button>
+    </div>
+    <div class="admin-active-list" id="admin-active-list"></div>
+    <button class="reset-btn" id="btn-reset-game">Reset all progress</button>
+  </section>
+
+  <!-- SELL MODAL -->
+  <div class="modal-overlay" id="sell-modal">
+    <div class="modal-card">
+      <button class="modal-close" id="btn-sell-close">✕</button>
+      <h2>Appraise an Item</h2>
+      <div class="sell-video-wrap" id="sell-video-wrap"><video id="sell-video" autoplay playsinline muted></video></div>
+      <div class="sell-upload-wrap" id="sell-upload-wrap">
+        <label class="upload-label">Camera preview isn't available here — take or choose a photo instead
+          <input type="file" accept="image/*" capture="environment" id="sell-file-input"/>
+        </label>
+      </div>
+      <button class="capture-btn" id="sell-capture-btn">📸 Capture &amp; Appraise</button>
+      <div class="sell-loading" id="sell-loading">Appraising...</div>
+      <div class="sell-error" id="sell-error">Couldn't get a clear read on that — try better lighting and capture again.</div>
+      <div class="sell-result" id="sell-result">
+        <div class="appraisal-item"></div>
+        <div class="appraisal-value"></div>
+        <div class="appraisal-blurb"></div>
+        <div class="sell-result-actions">
+          <button id="sell-accept-btn" class="accept-btn">Add to Gold</button>
+          <button id="sell-retake-btn" class="retake-btn">Retake</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-layer" id="toast-layer"></div>
+</div>
+
+<script>
+'use strict';
+
+/* ===================== CONSTANTS ===================== */
+const STORE_PLAYER='orerush:player';
+const STORE_EFFECTS='orerush:effects';
+
+const POTIONS=[
+  {id:'swift', name:'Swift Pick Potion', icon:'⚡', stat:'cooldown', multiplier:0.55, durationMin:5, baseCost:30, desc:'Mine ~45% faster'},
+  {id:'heavy', name:'Heavy Hammer Potion', icon:'💪', stat:'damage', multiplier:1.6, durationMin:5, baseCost:30, desc:'+60% mining power'},
+  {id:'lucky', name:'Lucky Vein Potion', icon:'🍀', stat:'yield', multiplier:1.5, durationMin:5, baseCost:40, desc:'+50% gold per rock'}
+];
+
+/* ===================== STATE ===================== */
+let player=null;
+let effects=[];
+let uiState={clickLocked:false};
+let saveTimer=null;
+let mediaStream=null;
+let cameraMode='none';
+let pendingAppraisal=null;
+
+/* ===================== STORAGE HELPERS ===================== */
+async function storageGet(key, fallback){
+  try{
+    if(!window.storage) return fallback;
+    const res=await window.storage.get(key, false);
+    return res ? JSON.parse(res.value) : fallback;
+  }catch(e){ return fallback; }
+}
+async function storageSet(key, value){
+  try{
+    if(!window.storage) return;
+    await window.storage.set(key, JSON.stringify(value), false);
+  }catch(e){ /* keep playing locally even if storage fails */ }
+}
+
+function defaultPlayer(){
+  return {balance:0, baseDamage:5, baseCooldown:650, rocksMined:0, rockMaxHp:40, rockHp:40, potionPurchases:{}};
+}
+
+function persistPlayerNow(){
+  if(saveTimer){ clearTimeout(saveTimer); saveTimer=null; }
+  storageSet(STORE_PLAYER, player);
+}
+function persistPlayerDebounced(){
+  if(saveTimer) return;
+  saveTimer=setTimeout(()=>{ storageSet(STORE_PLAYER, player); saveTimer=null; }, 1200);
+}
+
+/* ===================== UTIL ===================== */
+function uid(){ return Math.random().toString(36).slice(2)+Date.now().toString(36); }
+function clamp(n,min,max){ return Math.min(max,Math.max(min,n)); }
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function fmtTime(ms){
+  if(ms<0) ms=0;
+  const s=Math.ceil(ms/1000);
+  const m=Math.floor(s/60);
+  const sec=s%60;
+  return m+':'+String(sec).padStart(2,'0');
+}
+function escapeHtml(str){
+  const d=document.createElement('div');
+  d.textContent=str==null?'':String(str);
+  return d.innerHTML;
+}
+function toast(msg){
+  const layer=document.getElementById('toast-layer');
+  const el=document.createElement('div');
+  el.className='toast';
+  el.textContent=msg;
+  layer.appendChild(el);
+  setTimeout(()=>el.remove(), 2300);
+}
+
+/* ===================== EFFECTIVE STATS ===================== */
+function getEffectiveStats(){
+  const now=Date.now();
+  let dmgMult=1, cdMult=1, yieldMult=1;
+  effects.filter(e=>e.expiresAt>now).forEach(e=>{
+    if(e.stat==='damage') dmgMult*=e.multiplier;
+    if(e.stat==='cooldown') cdMult*=e.multiplier;
+    if(e.stat==='yield') yieldMult*=e.multiplier;
+  });
+  return {
+    damage: Math.max(1, Math.round(player.baseDamage*dmgMult)),
+    cooldown: clamp(Math.round(player.baseCooldown*cdMult), 90, 6000),
+    yieldMult
+  };
+}
+
+/* ===================== RENDER: MAIN STATS ===================== */
+function updateStatsDisplay(){
+  const stats=getEffectiveStats();
+  document.getElementById('stat-balance').textContent=player.balance;
+  document.getElementById('stat-power').textContent=stats.damage;
+  document.getElementById('stat-speed').textContent=(1000/stats.cooldown).toFixed(1);
+  document.getElementById('stat-rocks').textContent=player.rocksMined;
+  document.getElementById('hp-fill').style.width=clamp((player.rockHp/player.rockMaxHp)*100,0,100)+'%';
+  updateCracks();
+}
+function updateCracks(){
+  const pct=player.rockHp/player.rockMaxHp;
+  document.getElementById('crack1').classList.toggle('show', pct<=0.66);
+  document.getElementById('crack2').classList.toggle('show', pct<=0.36);
+  document.getElementById('crack3').classList.toggle('show', pct<=0.14);
+}
+
+/* ===================== RENDER: EFFECT PANELS ===================== */
+function renderEffectBadges(containerId, source, emptyText){
+  const now=Date.now();
+  const list=effects.filter(e=>e.source===source && e.expiresAt>now);
+  const el=document.getElementById(containerId);
+  if(!list.length){
+    el.innerHTML='<div class="badge-empty">'+emptyText+'</div>';
+    return;
+  }
+  el.innerHTML=list.map(e=>
+    '<div class="badge"><span class="badge-icon">'+e.icon+'</span>'+
+    '<span class="badge-name">'+escapeHtml(e.name)+'</span>'+
+    '<span class="badge-time">'+fmtTime(e.expiresAt-now)+'</span></div>'
+  ).join('');
+}
+
+function tickEffects(){
+  const now=Date.now();
+  const before=effects.length;
+  effects=effects.filter(e=>e.expiresAt>now);
+  if(effects.length!==before) storageSet(STORE_EFFECTS, effects);
+  renderEffectBadges('potions-list','potion','No potions active');
+  renderEffectBadges('effects-list','admin','No curses active');
+  updateStatsDisplay();
+  if(document.getElementById('screen-admin').classList.contains('active')) renderAdminActiveList();
+}
+
+/* ===================== ROCK / MINING ===================== */
+function spawnPopup(text){
+  const layer=document.getElementById('popups-layer');
+  const el=document.createElement('div');
+  el.className='popup';
+  el.textContent=text;
+  layer.appendChild(el);
+  setTimeout(()=>el.remove(), 950);
+}
+function spawnBurst(){
+  const layer=document.getElementById('popups-layer');
+  for(let i=0;i<8;i++){
+    const el=document.createElement('div');
+    el.className='particle';
+    el.textContent='🪙';
+    const angle=Math.random()*Math.PI*2;
+    const dist=40+Math.random()*50;
+    el.style.setProperty('--bx', (Math.cos(angle)*dist)+'px');
+    el.style.setProperty('--by', (Math.sin(angle)*dist)+'px');
+    layer.appendChild(el);
+    setTimeout(()=>el.remove(), 650);
+  }
+}
+
+function onRockClick(){
+  if(uiState.clickLocked) return;
+  const stats=getEffectiveStats();
+  player.rockHp-=stats.damage;
+
+  const wrap=document.getElementById('rock-wrap');
+  wrap.classList.add('shake');
+  setTimeout(()=>wrap.classList.remove('shake'), 180);
+
+  if(player.rockHp<=0){
+    breakRock(stats.yieldMult);
+  }else{
+    updateStatsDisplay();
+    persistPlayerDebounced();
+  }
+
+  uiState.clickLocked=true;
+  wrap.classList.add('cooling');
+  setTimeout(()=>{ uiState.clickLocked=false; wrap.classList.remove('cooling'); }, stats.cooldown);
+}
+
+function breakRock(yieldMult){
+  const gold=Math.max(1, Math.round(randInt(8,15)*yieldMult));
+  player.balance+=gold;
+  player.rocksMined+=1;
+  player.rockMaxHp=Math.min(400, Math.round(40*(1+player.rocksMined*0.025)));
+  player.rockHp=player.rockMaxHp;
+
+  spawnPopup('+'+gold+' 🪙');
+  spawnBurst();
+
+  const group=document.getElementById('rock-group');
+  group.classList.add('breaking');
+  setTimeout(()=>{
+    group.classList.remove('breaking');
+    updateStatsDisplay();
+  }, 460);
+
+  persistPlayerNow();
+  updateStatsDisplay();
+  renderShop();
+}
+
+/* ===================== SHOP ===================== */
+function potionCost(p){
+  const count=player.potionPurchases[p.id]||0;
+  return Math.round(p.baseCost*Math.pow(1.15,count));
+}
+function renderShop(){
+  const grid=document.getElementById('potion-grid');
+  grid.innerHTML=POTIONS.map(p=>{
+    const cost=potionCost(p);
+    const affordable=player.balance>=cost;
+    return '<div class="potion-card'+(affordable?'':' unaffordable')+'" data-id="'+p.id+'">'+
+      '<div class="potion-icon">'+p.icon+'</div>'+
+      '<div class="potion-name">'+escapeHtml(p.name)+'</div>'+
+      '<div class="potion-desc">'+escapeHtml(p.desc)+'</div>'+
+      '<div class="potion-duration">Lasts '+p.durationMin+' min</div>'+
+      '<button class="potion-buy" data-id="'+p.id+'">'+cost+' 🪙</button>'+
+    '</div>';
+  }).join('');
+  grid.querySelectorAll('.potion-buy').forEach(btn=>{
+    btn.addEventListener('click', ()=>buyPotion(btn.getAttribute('data-id')));
+  });
+}
+function buyPotion(id){
+  const p=POTIONS.find(x=>x.id===id);
+  if(!p) return;
+  const cost=potionCost(p);
+  if(player.balance<cost){ toast('Not enough gold — mine more or sell an item'); return; }
+  player.balance-=cost;
+  player.potionPurchases[id]=(player.potionPurchases[id]||0)+1;
+  const now=Date.now();
+  const durationMs=p.durationMin*60000;
+  const existing=effects.find(e=>e.potionId===p.id && e.expiresAt>now);
+  if(existing){
+    existing.expiresAt=now+durationMs;
+  }else{
+    effects.push({id:uid(), source:'potion', potionId:p.id, name:p.name, icon:p.icon, stat:p.stat, multiplier:p.multiplier, createdAt:now, expiresAt:now+durationMs});
+  }
+  persistPlayerNow();
+  storageSet(STORE_EFFECTS, effects);
+  renderShop();
+  tickEffects();
+  toast(p.name+' activated!');
+}
+
+/* ===================== ADMIN ===================== */
+function renderAdminSnapshot(){
+  const stats=getEffectiveStats();
+  document.getElementById('admin-snapshot').innerHTML=
+    '<span>🪙 '+player.balance+'</span><span>⛏️ Power '+stats.damage+'</span><span>⏱️ Speed '+(1000/stats.cooldown).toFixed(1)+'/s</span><span>Rocks '+player.rocksMined+'</span>';
+}
+function renderAdminActiveList(){
+  renderAdminSnapshot();
+  const now=Date.now();
+  const list=effects.filter(e=>e.expiresAt>now);
+  const el=document.getElementById('admin-active-list');
+  if(!list.length){ el.innerHTML='<div class="badge-empty">No active effects</div>'; return; }
+  el.innerHTML=list.map(e=>
+    '<div class="admin-effect-row is-'+e.source+'"><span>'+e.icon+' '+escapeHtml(e.name)+' — '+fmtTime(e.expiresAt-now)+'</span>'+
+    '<button class="cancel-btn" data-id="'+e.id+'">Cancel</button></div>'
+  ).join('');
+  el.querySelectorAll('.cancel-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>cancelEffect(btn.getAttribute('data-id')));
+  });
+}
+function cancelEffect(id){
+  effects=effects.filter(e=>e.id!==id);
+  storageSet(STORE_EFFECTS, effects);
+  renderAdminActiveList();
+  tickEffects();
+}
+function applyAdminEffect(){
+  const stat=document.getElementById('admin-stat').value;
+  const mode=document.getElementById('admin-mode').value;
+  const pct=clamp(Number(document.getElementById('admin-pct').value)||30, 1, 95);
+  const minutes=clamp(Number(document.getElementById('admin-duration').value)||10, 1, 1440);
+  let multiplier;
+  if(stat==='damage'){
+    multiplier= mode==='curse' ? (1-pct/100) : (1+pct/100);
+  }else{
+    multiplier= mode==='curse' ? (1/(1-pct/100)) : Math.max(0.1, 1-pct/100);
+  }
+  const defaultLabel = mode==='curse'
+    ? (stat==='damage' ? 'Weaker Pickaxe' : 'Slower Mining')
+    : (stat==='damage' ? 'Power Surge' : 'Speed Boost');
+  const labelInput=document.getElementById('admin-label');
+  const label=(labelInput.value||'').trim() || (defaultLabel+' ('+(mode==='curse'?'-':'+')+pct+'%)');
+  const icon = stat==='damage' ? (mode==='curse'?'💀':'💪') : (mode==='curse'?'🐌':'⚡');
+
+  effects.push({
+    id:uid(), source:'admin', name:label, icon, stat, multiplier,
+    createdAt:Date.now(), expiresAt:Date.now()+minutes*60000
+  });
+  storageSet(STORE_EFFECTS, effects);
+  renderAdminActiveList();
+  tickEffects();
+  labelInput.value='';
+  toast('Applied: '+label);
+}
+function resetGame(){
+  if(!confirm('Reset all progress? This cannot be undone.')) return;
+  player=defaultPlayer();
+  effects=[];
+  storageSet(STORE_PLAYER, player);
+  storageSet(STORE_EFFECTS, effects);
+  renderAll();
+  toast('Progress reset');
+}
+
+/* ===================== SCREENS ===================== */
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  if(name==='shop') renderShop();
+  if(name==='admin') renderAdminActiveList();
+}
+
+/* ===================== SELL / APPRAISAL ===================== */
+function resetSellUI(){
+  document.getElementById('sell-result').style.display='none';
+  document.getElementById('sell-error').style.display='none';
+  document.getElementById('sell-loading').style.display='none';
+  document.getElementById('sell-capture-btn').style.display = cameraMode==='live' ? 'block' : 'none';
+  document.getElementById('sell-file-input').value='';
+  pendingAppraisal=null;
+}
+async function openSellModal(){
+  document.getElementById('sell-modal').classList.add('open');
+  resetSellUI();
+  const videoWrap=document.getElementById('sell-video-wrap');
+  const uploadWrap=document.getElementById('sell-upload-wrap');
+  try{
+    mediaStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
+    const video=document.getElementById('sell-video');
+    video.srcObject=mediaStream;
+    await video.play();
+    cameraMode='live';
+    videoWrap.style.display='block';
+    uploadWrap.style.display='none';
+    document.getElementById('sell-capture-btn').style.display='block';
+  }catch(err){
+    cameraMode='upload';
+    videoWrap.style.display='none';
+    uploadWrap.style.display='block';
+    document.getElementById('sell-capture-btn').style.display='none';
+  }
+}
+function closeSellModal(){
+  document.getElementById('sell-modal').classList.remove('open');
+  if(mediaStream){ mediaStream.getTracks().forEach(t=>t.stop()); mediaStream=null; }
+  resetSellUI();
+}
+function captureToBase64(sourceEl, maxDim){
+  const cw=sourceEl.videoWidth || sourceEl.naturalWidth || sourceEl.width;
+  const ch=sourceEl.videoHeight || sourceEl.naturalHeight || sourceEl.height;
+  const scale=Math.min(1, maxDim/Math.max(cw,ch));
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.round(cw*scale));
+  canvas.height=Math.max(1,Math.round(ch*scale));
+  const ctx=canvas.getContext('2d');
+  ctx.drawImage(sourceEl, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/jpeg', 0.82).split(',')[1];
+}
+async function appraiseImage(base64){
+  const prompt='You are appraising a real-world object for a playful kids\' mining-game economy (not a real financial appraisal). '+
+    'Look only at the physical object being shown to the camera and ignore any people in the frame. '+
+    'Estimate a fun in-game gold value between 5 and 100 based on the object\'s apparent size and complexity '+
+    '(bigger or more intricate items like locks, electronics, or tools should be worth more than small simple soft items like a plain pillow or sock). '+
+    'Respond with ONLY raw JSON, no markdown formatting, no code fences, in exactly this shape: '+
+    '{"item":"short name of what you see","value":<integer 5-100>,"blurb":"one short playful sentence about the find"}';
+  const res=await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:300,
+      messages:[{role:'user', content:[
+        {type:'image', source:{type:'base64', media_type:'image/jpeg', data:base64}},
+        {type:'text', text:prompt}
+      ]}]
+    })
+  });
+  const data=await res.json();
+  const textBlock=(data.content||[]).find(b=>b.type==='text');
+  if(!textBlock) throw new Error('No response text');
+  const cleaned=textBlock.text.replace(/```json|```/g,'').trim();
+  const parsed=JSON.parse(cleaned);
+  if(typeof parsed.value!=='number') throw new Error('Bad value');
+  parsed.value=clamp(Math.round(parsed.value),1,200);
+  return parsed;
+}
+async function runAppraisal(base64){
+  document.getElementById('sell-loading').style.display='block';
+  document.getElementById('sell-error').style.display='none';
+  document.getElementById('sell-result').style.display='none';
+  try{
+    const result=await appraiseImage(base64);
+    pendingAppraisal=result;
+    document.getElementById('sell-result').style.display='block';
+    document.querySelector('#sell-result .appraisal-item').textContent=result.item||'Mystery item';
+    document.querySelector('#sell-result .appraisal-value').textContent='+'+result.value+' 🪙';
+    document.querySelector('#sell-result .appraisal-blurb').textContent=result.blurb||'';
+  }catch(err){
+    document.getElementById('sell-error').style.display='block';
+  }finally{
+    document.getElementById('sell-loading').style.display='none';
+  }
+}
+
+/* ===================== SYNC POLLING ===================== */
+async function pollSync(){
+  try{
+    const remoteEffects=await storageGet(STORE_EFFECTS, null);
+    if(remoteEffects && JSON.stringify(remoteEffects)!==JSON.stringify(effects)){
+      effects=remoteEffects;
+      tickEffects();
+    }
+    const remotePlayer=await storageGet(STORE_PLAYER, null);
+    if(remotePlayer && JSON.stringify(remotePlayer)!==JSON.stringify(player)){
+      player=remotePlayer;
+      updateStatsDisplay();
+      renderShop();
+      if(document.getElementById('screen-admin').classList.contains('active')) renderAdminSnapshot();
+    }
+  }catch(e){ /* ignore transient sync errors */ }
+}
+
+/* ===================== RENDER ALL / INIT ===================== */
+function renderAll(){
+  updateStatsDisplay();
+  tickEffects();
+  renderShop();
+}
+
+function wireEvents(){
+  document.getElementById('rock-svg').addEventListener('click', onRockClick);
+  document.getElementById('btn-open-shop').addEventListener('click', ()=>showScreen('shop'));
+  document.getElementById('btn-shop-back').addEventListener('click', ()=>showScreen('main'));
+  document.getElementById('btn-open-admin').addEventListener('click', ()=>showScreen('admin'));
+  document.getElementById('btn-admin-back').addEventListener('click', ()=>showScreen('shop'));
+  document.getElementById('btn-reset-game').addEventListener('click', resetGame);
+  document.getElementById('admin-apply-btn').addEventListener('click', applyAdminEffect);
+  document.querySelectorAll('.pct-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ document.getElementById('admin-pct').value=btn.getAttribute('data-pct'); });
+  });
+
+  document.getElementById('btn-open-sell').addEventListener('click', openSellModal);
+  document.getElementById('btn-sell-close').addEventListener('click', closeSellModal);
+  document.getElementById('sell-capture-btn').addEventListener('click', ()=>{
+    const video=document.getElementById('sell-video');
+    const b64=captureToBase64(video, 800);
+    runAppraisal(b64);
+  });
+  document.getElementById('sell-file-input').addEventListener('change', (e)=>{
+    const file=e.target.files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const img=new Image();
+      img.onload=()=>{
+        const b64=captureToBase64(img, 800);
+        runAppraisal(b64);
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('sell-accept-btn').addEventListener('click', ()=>{
+    if(pendingAppraisal){
+      player.balance+=pendingAppraisal.value;
+      persistPlayerNow();
+      updateStatsDisplay();
+      renderShop();
+      toast('Added '+pendingAppraisal.value+' gold!');
+    }
+    closeSellModal();
+  });
+  document.getElementById('sell-retake-btn').addEventListener('click', resetSellUI);
+}
+
+async function init(){
+  player=await storageGet(STORE_PLAYER, null) || defaultPlayer();
+  if(player.rockMaxHp==null) player.rockMaxHp=40;
+  if(player.rockHp==null) player.rockHp=player.rockMaxHp;
+  if(player.potionPurchases==null) player.potionPurchases={};
+  effects=await storageGet(STORE_EFFECTS, null) || [];
+
+  wireEvents();
+  renderAll();
+  setInterval(tickEffects, 1000);
+  setInterval(pollSync, 4000);
+}
+
+init();
+</script>
+</body>
+</html>
