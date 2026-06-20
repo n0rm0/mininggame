@@ -717,43 +717,85 @@ function captureToBase64(sourceEl, maxDim){
   return canvas.toDataURL('image/jpeg', 0.82).split(',')[1];
 }
 
-async function appraiseImage(base64){
-  const prompt=
-    'You are the coin-reward judge for a kids treasure-hunt game. '+
-    'The player is scanning something they found hidden in their blankets or pillows at home. '+
-    'Ignore any people in the frame. '+
-    'Judge the object on TWO things: (1) what TYPE it is, and (2) how COMPLEX and BIG it appears. '+
-    'Scoring rules: '+
-    '- Plain blanket, pillow, or cushion (simple, soft, no features): 5–15 coins. '+
-    '- Simple toy (small, single-piece, no moving parts — e.g. a rubber duck, a small ball, a basic stuffed animal): 20–45 coins. '+
-    '- Medium toy (some detail, multiple parts or features — e.g. a doll, action figure, plush with accessories): 46–70 coins. '+
-    '- Complex toy (many parts, electronic, mechanical, or very large — e.g. a robot, building set, remote-control vehicle, game controller): 71–100 coins. '+
-    'Respond with ONLY raw JSON, no markdown, no code fences, exactly: '+
-    '{"item":"short name of what you see","value":<integer 5-100>,"blurb":"one short fun sentence about the discovery","type":"blanket|simple_toy|medium_toy|complex_toy"}';
+const VISION_KEY='AIzaSyBgMaqQk2tP28GSQ8hIatcOaJg9MfGY5Ik';
 
-  const res=await fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-6',
-      max_tokens:300,
-      messages:[{role:'user', content:[
-        {type:'image', source:{type:'base64', media_type:'image/jpeg', data:base64}},
-        {type:'text', text:prompt}
-      ]}]
-    })
-  });
+// Keywords that suggest complexity tiers
+const COMPLEX_TOY_WORDS=['robot','remote','control','electronic','lego','technic','transformer','vehicle','car','truck','controller','gameboy','nintendo','console','mechanical','drone','gun','laser','lightsaber','walkie'];
+const MEDIUM_TOY_WORDS=['doll','action figure','figurine','puppet','barbie','teddy','plush','stuffed','dinosaur','dragon','horse','truck','train','airplane','playset'];
+const BLANKET_WORDS=['blanket','pillow','cushion','quilt','duvet','bedding','towel','cloth','fabric','sheet','comforter','throw'];
+
+function scoreFromLabels(labels){
+  const text=labels.map(l=>l.description.toLowerCase()).join(' ');
+
+  // Check blanket/pillow first
+  if(BLANKET_WORDS.some(w=>text.includes(w))){
+    return {type:'blanket', value:randInt(5,15)};
+  }
+  // Complex toy
+  if(COMPLEX_TOY_WORDS.some(w=>text.includes(w))){
+    return {type:'complex_toy', value:randInt(71,100)};
+  }
+  // Medium toy
+  if(MEDIUM_TOY_WORDS.some(w=>text.includes(w))){
+    return {type:'medium_toy', value:randInt(46,70)};
+  }
+  // If "toy" or "game" appears at all
+  if(text.includes('toy') || text.includes('game') || text.includes('play')){
+    return {type:'simple_toy', value:randInt(20,45)};
+  }
+  // Anything else found — treat as simple toy
+  return {type:'simple_toy', value:randInt(15,35)};
+}
+
+function blurbFor(type, item){
+  if(type==='blanket') return 'Cosy find, but the real treasure is hiding deeper!';
+  if(type==='complex_toy') return 'Whoa, a super complex toy — massive haul!';
+  if(type==='medium_toy') return 'Nice find! A solid toy discovery!';
+  return 'A fun little toy unearthed from the blanket pile!';
+}
+
+async function appraiseImage(base64){
+  const res=await fetch(
+    'https://vision.googleapis.com/v1/images:annotate?key='+VISION_KEY,
+    {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        requests:[{
+          image:{content:base64},
+          features:[
+            {type:'LABEL_DETECTION', maxResults:15},
+            {type:'OBJECT_LOCALIZATION', maxResults:10}
+          ]
+        }]
+      })
+    }
+  );
   const data=await res.json();
-  const textBlock=(data.content||[]).find(b=>b.type==='text');
-  if(!textBlock) throw new Error('No response text');
-  const cleaned=textBlock.text.replace(/```json|```/g,'').trim();
-  const parsed=JSON.parse(cleaned);
-  if(typeof parsed.value!=='number') throw new Error('Bad value');
+  if(data.error) throw new Error(data.error.message||'Vision API error');
+
+  const response=data.responses[0];
+  const labels=[
+    ...(response.labelAnnotations||[]),
+    ...(response.localizedObjectAnnotations||[]).map(o=>({description:o.name, score:o.score}))
+  ];
+  if(!labels.length) throw new Error('Nothing detected');
+
+  // Best label name for display
+  const topLabel=labels[0].description;
+
+  const {type, value: rawValue}=scoreFromLabels(labels);
 
   // Apply active yield multiplier
   const stats=getEffectiveStats();
-  parsed.value=clamp(Math.round(parsed.value * stats.yieldMult), 1, 500);
-  return parsed;
+  const value=clamp(Math.round(rawValue * stats.yieldMult), 1, 500);
+
+  return {
+    item: topLabel,
+    value,
+    blurb: blurbFor(type, topLabel),
+    type
+  };
 }
 
 async function runAppraisal(base64){
