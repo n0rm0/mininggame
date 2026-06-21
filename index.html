@@ -6,189 +6,173 @@
 <title>Blanket Hunt</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
 :root{
-  --stone-dark:#1a130f;
-  --stone-mid:#2a1f16;
-  --stone-line:#4a3526;
-  --gold:#e3a83b;
-  --gold-bright:#f6c862;
-  --teal:#4fd1c5;
-  --crimson:#c0524a;
-  --bone:#ede3d3;
-  --bone-dim:#bfb19c;
+--stone-dark:#1a130f;
+--stone-mid:#2a1f16;
+--stone-line:#4a3526;
+--gold:#e3a83b;
+--gold-bright:#f6c862;
+--teal:#4fd1c5;
+--crimson:#c0524a;
+--bone:#ede3d3;
+--bone-dim:#bfb19c;
 }
-
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;height:100%;}
 body{
-  font-family:'Space Grotesk',sans-serif;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(227,168,59,0.07), transparent 38%),
-    radial-gradient(circle at 82% 88%, rgba(79,209,197,0.05), transparent 42%),
-    var(--stone-dark);
-  color:var(--bone);
-  min-height:100dvh;
-  overflow-x:hidden;
+font-family:'Space Grotesk',sans-serif;
+background:
+radial-gradient(circle at 18% 12%, rgba(227,168,59,0.07), transparent 38%),
+radial-gradient(circle at 82% 88%, rgba(79,209,197,0.05), transparent 42%),
+var(--stone-dark);
+color:var(--bone);
+min-height:100dvh;
+overflow-x:hidden;
 }
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 input,select{font-family:inherit;}
 :focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px;}
-
 #app{position:relative;width:100%;min-height:100dvh;}
-
 .screen{display:none;position:relative;min-height:100dvh;padding:16px;padding-top:max(16px, env(safe-area-inset-top));padding-bottom:max(16px, env(safe-area-inset-bottom));}
 .screen.active{display:flex;flex-direction:column;}
-
 /* ---------- MAIN SCREEN ---------- */
 #screen-main{min-height:100dvh;}
-
 .panel{
-  background:rgba(42,31,22,0.82);
-  border:1px solid var(--stone-line);
-  border-radius:10px;
-  padding:10px 14px;
-  backdrop-filter:blur(2px);
+background:rgba(42,31,22,0.82);
+border:1px solid var(--stone-line);
+border-radius:10px;
+padding:10px 14px;
+backdrop-filter:blur(2px);
 }
-
 .panel--stats{position:absolute;top:max(16px,env(safe-area-inset-top));left:16px;z-index:5;}
 .stats-title{
-  font-family:'Cinzel',serif;
-  font-weight:700;
-  letter-spacing:2px;
-  font-size:13px;
-  color:var(--gold-bright);
-  margin-bottom:6px;
+font-family:'Cinzel',serif;
+font-weight:700;
+letter-spacing:2px;
+font-size:13px;
+color:var(--gold-bright);
+margin-bottom:6px;
 }
 .stat-row{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:600;}
 .stat-row.small{font-size:13px;font-weight:500;color:var(--bone-dim);margin-top:2px;}
 .stat-icon{font-size:14px;}
-
 .shop-btn{
-  position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;z-index:5;
-  background:linear-gradient(180deg,var(--gold-bright),var(--gold));
-  color:#2a1d10;font-weight:700;font-size:14px;
-  padding:10px 16px;border-radius:9px;
-  box-shadow:0 2px 0 #8a5e1f, 0 4px 10px rgba(0,0,0,0.4);
+position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;z-index:5;
+background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+color:#2a1d10;font-weight:700;font-size:14px;
+padding:10px 16px;border-radius:9px;
+box-shadow:0 2px 0 #8a5e1f, 0 4px 10px rgba(0,0,0,0.4);
 }
 .shop-btn:active{transform:translateY(2px);box-shadow:0 0 0 #8a5e1f;}
-
 /* ---------- HUNT AREA ---------- */
 .hunt-area{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:20px;position:relative;min-height:300px;padding:0 16px;
+flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+gap:20px;position:relative;min-height:300px;padding:0 16px;
 }
 .hunt-hero{
-  text-align:center;
+text-align:center;
 }
 .hunt-emoji{
-  font-size:80px;
-  line-height:1;
-  animation:float 3s ease-in-out infinite;
-  display:block;
-  margin-bottom:12px;
-  filter:drop-shadow(0 6px 18px rgba(227,168,59,0.25));
+font-size:80px;
+line-height:1;
+animation:float 3s ease-in-out infinite;
+display:block;
+margin-bottom:12px;
+filter:drop-shadow(0 6px 18px rgba(227,168,59,0.25));
 }
 @keyframes float{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-10px);}
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
 }
 .hunt-headline{
-  font-family:'Cinzel',serif;
-  font-size:22px;
-  font-weight:700;
-  color:var(--gold-bright);
-  margin-bottom:6px;
-  letter-spacing:0.5px;
+font-family:'Cinzel',serif;
+font-size:22px;
+font-weight:700;
+color:var(--gold-bright);
+margin-bottom:6px;
+letter-spacing:0.5px;
 }
 .hunt-sub{
-  font-size:13px;
-  color:var(--bone-dim);
-  max-width:280px;
-  margin:0 auto;
-  line-height:1.5;
+font-size:13px;
+color:var(--bone-dim);
+max-width:280px;
+margin:0 auto;
+line-height:1.5;
 }
-
 /* coin multiplier hint */
 .coin-guide{
-  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:340px;
+display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:340px;
 }
 .coin-tier{
-  display:flex;align-items:center;gap:5px;
-  background:rgba(42,31,22,0.7);border:1px solid var(--stone-line);
-  border-radius:8px;padding:6px 10px;font-size:12px;
+display:flex;align-items:center;gap:5px;
+background:rgba(42,31,22,0.7);border:1px solid var(--stone-line);
+border-radius:8px;padding:6px 10px;font-size:12px;
 }
 .coin-tier-icon{font-size:18px;}
 .coin-tier-label{color:var(--bone-dim);}
 .coin-tier-amt{color:var(--gold-bright);font-weight:700;}
-
 .popups-layer{position:absolute;inset:0;pointer-events:none;overflow:visible;}
 .popup{
-  position:absolute;left:50%;top:38%;transform:translate(-50%,0);
-  font-weight:700;font-size:20px;color:var(--gold-bright);
-  text-shadow:0 2px 4px rgba(0,0,0,0.6);
-  animation:floatUp 0.9s ease forwards;
+position:absolute;left:50%;top:38%;transform:translate(-50%,0);
+font-weight:700;font-size:20px;color:var(--gold-bright);
+text-shadow:0 2px 4px rgba(0,0,0,0.6);
+animation:floatUp 0.9s ease forwards;
 }
 @keyframes floatUp{
-  0%{opacity:0;transform:translate(-50%,0) scale(0.8);}
-  15%{opacity:1;transform:translate(-50%,-10px) scale(1.05);}
-  100%{opacity:0;transform:translate(-50%,-70px) scale(1);}
+0%{opacity:0;transform:translate(-50%,0) scale(0.8);}
+15%{opacity:1;transform:translate(-50%,-10px) scale(1.05);}
+100%{opacity:0;transform:translate(-50%,-70px) scale(1);}
 }
 .particle{
-  position:absolute;left:50%;top:42%;font-size:16px;
-  animation:burst 0.6s ease-out forwards;
+position:absolute;left:50%;top:42%;font-size:16px;
+animation:burst 0.6s ease-out forwards;
 }
 @keyframes burst{
-  0%{opacity:1;transform:translate(-50%,-50%) translate(0,0) scale(1);}
-  100%{opacity:0;transform:translate(-50%,-50%) translate(var(--bx),var(--by)) scale(0.6);}
+0%{opacity:1;transform:translate(-50%,-50%) translate(0,0) scale(1);}
+100%{opacity:0;transform:translate(-50%,-50%) translate(var(--bx),var(--by)) scale(0.6);}
 }
-
 .panel--potions{position:absolute;bottom:max(92px,calc(92px + env(safe-area-inset-bottom)));left:16px;max-width:44%;z-index:4;}
 .panel--effects{position:absolute;bottom:max(92px,calc(92px + env(safe-area-inset-bottom)));right:16px;max-width:44%;z-index:4;text-align:right;}
 .panel-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--bone-dim);margin-bottom:6px;}
 .badge{
-  display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
-  padding:5px 8px;border-radius:7px;margin-bottom:5px;
-  background:rgba(20,15,10,0.6);border-left:3px solid var(--teal);
+display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+padding:5px 8px;border-radius:7px;margin-bottom:5px;
+background:rgba(20,15,10,0.6);border-left:3px solid var(--teal);
 }
 .panel--effects .badge{border-left:none;border-right:3px solid var(--crimson);flex-direction:row-reverse;}
 .badge-time{opacity:0.8;font-weight:500;font-size:11px;}
 .badge-empty{font-size:11px;color:var(--bone-dim);opacity:0.6;font-style:italic;}
-
 .scan-btn{
-  position:absolute;bottom:max(20px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:5;
-  background:linear-gradient(180deg,var(--gold-bright),var(--gold));
-  color:#2a1d10;font-weight:700;font-size:16px;padding:15px 32px;border-radius:30px;
-  box-shadow:0 4px 14px rgba(227,168,59,0.35);white-space:nowrap;
+position:absolute;bottom:max(20px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:5;
+background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+color:#2a1d10;font-weight:700;font-size:16px;padding:15px 32px;border-radius:30px;
+box-shadow:0 4px 14px rgba(227,168,59,0.35);white-space:nowrap;
 }
 .scan-btn:active{transform:translateX(-50%) translateY(2px);}
-
 @media (max-width:480px){
-  .panel{padding:8px 10px;}
-  .stat-row{font-size:14px;}
-  .panel--potions,.panel--effects{max-width:46%;bottom:84px;}
-  .badge{font-size:11px;}
+.panel{padding:8px 10px;}
+.stat-row{font-size:14px;}
+.panel--potions,.panel--effects{max-width:46%;bottom:84px;}
+.badge{font-size:11px;}
 }
-
 /* ---------- SHOP / ADMIN SCREENS ---------- */
 .back-btn{
-  position:absolute;top:max(16px,env(safe-area-inset-top));left:16px;
-  font-size:14px;font-weight:600;color:var(--bone-dim);
-  padding:8px 10px;border-radius:8px;
+position:absolute;top:max(16px,env(safe-area-inset-top));left:16px;
+font-size:14px;font-weight:600;color:var(--bone-dim);
+padding:8px 10px;border-radius:8px;
 }
 .back-btn:hover{color:var(--bone);}
 .screen-title{
-  font-family:'Cinzel',serif;font-size:26px;font-weight:700;
-  text-align:center;color:var(--gold-bright);margin:50px 0 24px;letter-spacing:1px;
+font-family:'Cinzel',serif;font-size:26px;font-weight:700;
+text-align:center;color:var(--gold-bright);margin:50px 0 24px;letter-spacing:1px;
 }
 .admin-title{color:var(--crimson);}
-
 .potion-grid{
-  display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:760px;margin:0 auto;width:100%;
+display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:760px;margin:0 auto;width:100%;
 }
 .potion-card{
-  width:200px;background:var(--stone-mid);border:1px solid var(--stone-line);
-  border-radius:12px;padding:16px;text-align:center;transition:transform 0.12s, border-color 0.12s;
+width:200px;background:var(--stone-mid);border:1px solid var(--stone-line);
+border-radius:12px;padding:16px;text-align:center;transition:transform 0.12s, border-color 0.12s;
 }
 .potion-card:hover{transform:translateY(-3px);border-color:var(--gold);}
 .potion-card.unaffordable{opacity:0.55;}
@@ -197,60 +181,57 @@ input,select{font-family:inherit;}
 .potion-desc{font-size:12px;color:var(--bone-dim);margin-bottom:4px;min-height:32px;}
 .potion-duration{font-size:11px;color:var(--teal);margin-bottom:10px;}
 .potion-buy{
-  width:100%;background:linear-gradient(180deg,var(--gold-bright),var(--gold));
-  color:#2a1d10;font-weight:700;padding:9px;border-radius:8px;font-size:14px;
+width:100%;background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+color:#2a1d10;font-weight:700;padding:9px;border-radius:8px;font-size:14px;
 }
 .potion-card.unaffordable .potion-buy{background:#5a4a35;color:#bba;}
-
 .admin-trigger{
-  position:fixed;bottom:10px;left:10px;width:18px;height:18px;
-  border-radius:50%;background:var(--crimson);opacity:0.22;font-size:10px;
-  display:flex;align-items:center;justify-content:center;z-index:9;
+position:fixed;bottom:10px;left:10px;width:18px;height:18px;
+border-radius:50%;background:var(--crimson);opacity:0.22;font-size:10px;
+display:flex;align-items:center;justify-content:center;z-index:9;
 }
 .admin-trigger:hover{opacity:0.6;}
-
 .admin-snapshot{
-  max-width:520px;margin:0 auto 18px;background:var(--stone-mid);border:1px solid var(--stone-line);
-  border-radius:10px;padding:10px 16px;font-size:13px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;
+max-width:520px;margin:0 auto 18px;background:var(--stone-mid);border:1px solid var(--stone-line);
+border-radius:10px;padding:10px 16px;font-size:13px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;
 }
 .admin-form{
-  max-width:420px;margin:0 auto;background:var(--stone-mid);border:1px solid var(--stone-line);
-  border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px;
+max-width:420px;margin:0 auto;background:var(--stone-mid);border:1px solid var(--stone-line);
+border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px;
 }
 .admin-form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--bone-dim);}
 .admin-form select,.admin-form input[type=number],.admin-form input[type=text]{
-  background:#150f0a;border:1px solid var(--stone-line);color:var(--bone);
-  padding:8px 10px;border-radius:7px;font-size:14px;
+background:#150f0a;border:1px solid var(--stone-line);color:var(--bone);
+padding:8px 10px;border-radius:7px;font-size:14px;
 }
 .pct-presets{display:flex;gap:6px;margin-bottom:6px;}
 .pct-btn{flex:1;background:#150f0a;border:1px solid var(--stone-line);border-radius:7px;padding:6px;font-size:11px;color:var(--bone-dim);}
 .pct-btn:hover{border-color:var(--crimson);color:var(--bone);}
 .apply-btn{
-  background:linear-gradient(180deg,#d16a5f,var(--crimson));color:#fff;font-weight:700;
-  padding:11px;border-radius:8px;font-size:14px;margin-top:4px;
+background:linear-gradient(180deg,#d16a5f,var(--crimson));color:#fff;font-weight:700;
+padding:11px;border-radius:8px;font-size:14px;margin-top:4px;
 }
 .admin-active-list{max-width:420px;margin:18px auto 0;display:flex;flex-direction:column;gap:8px;}
 .admin-effect-row{
-  display:flex;justify-content:space-between;align-items:center;gap:8px;
-  background:var(--stone-mid);border:1px solid var(--stone-line);border-radius:8px;padding:8px 12px;font-size:12px;
+display:flex;justify-content:space-between;align-items:center;gap:8px;
+background:var(--stone-mid);border:1px solid var(--stone-line);border-radius:8px;padding:8px 12px;font-size:12px;
 }
 .admin-effect-row.is-potion{border-left:3px solid var(--teal);}
 .admin-effect-row.is-admin{border-left:3px solid var(--crimson);}
 .cancel-btn{font-size:11px;color:var(--crimson);text-decoration:underline;}
 .reset-btn{
-  display:block;margin:30px auto 0;font-size:12px;color:var(--bone-dim);opacity:0.6;text-decoration:underline;
+display:block;margin:30px auto 0;font-size:12px;color:var(--bone-dim);opacity:0.6;text-decoration:underline;
 }
 .reset-btn:hover{opacity:1;}
-
 /* ---------- SCAN MODAL ---------- */
 .modal-overlay{
-  position:fixed;inset:0;background:rgba(10,7,5,0.88);display:none;
-  align-items:center;justify-content:center;z-index:50;padding:16px;
+position:fixed;inset:0;background:rgba(10,7,5,0.88);display:none;
+align-items:center;justify-content:center;z-index:50;padding:16px;
 }
 .modal-overlay.open{display:flex;}
 .modal-card{
-  background:var(--stone-mid);border:1px solid var(--stone-line);border-radius:14px;
-  padding:20px;width:100%;max-width:420px;position:relative;max-height:90dvh;overflow-y:auto;
+background:var(--stone-mid);border:1px solid var(--stone-line);border-radius:14px;
+padding:20px;width:100%;max-width:420px;position:relative;max-height:90dvh;overflow-y:auto;
 }
 .modal-card h2{font-family:'Cinzel',serif;font-size:18px;color:var(--gold-bright);margin:0 0 6px;text-align:center;}
 .modal-card .modal-hint{font-size:12px;color:var(--bone-dim);text-align:center;margin-bottom:14px;}
@@ -260,13 +241,13 @@ input,select{font-family:inherit;}
 .sell-video-wrap video{width:100%;height:100%;object-fit:cover;}
 .sell-upload-wrap{display:none;margin-bottom:12px;text-align:center;}
 .upload-label{
-  display:block;border:1px dashed var(--stone-line);border-radius:10px;padding:24px;
-  font-size:13px;color:var(--bone-dim);cursor:pointer;
+display:block;border:1px dashed var(--stone-line);border-radius:10px;padding:24px;
+font-size:13px;color:var(--bone-dim);cursor:pointer;
 }
 .upload-label input{display:block;margin:10px auto 0;}
 .capture-btn{
-  width:100%;background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#2a1d10;
-  font-weight:700;padding:12px;border-radius:9px;font-size:14px;
+width:100%;background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#2a1d10;
+font-weight:700;padding:12px;border-radius:9px;font-size:14px;
 }
 .sell-loading{display:none;text-align:center;font-size:13px;color:var(--teal);margin-top:10px;}
 .sell-error{display:none;text-align:center;font-size:13px;color:var(--crimson);margin-top:10px;}
@@ -278,147 +259,138 @@ input,select{font-family:inherit;}
 .accept-btn,.retake-btn{flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:700;}
 .accept-btn{background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#2a1d10;}
 .retake-btn{background:#150f0a;border:1px solid var(--stone-line);color:var(--bone-dim);}
-
 /* ---------- TOASTS ---------- */
 .toast-layer{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;}
 .toast{
-  background:rgba(20,15,10,0.95);border:1px solid var(--stone-line);color:var(--bone);
-  font-size:12px;padding:8px 16px;border-radius:20px;animation:toastIn 0.25s ease, toastOut 0.3s ease 1.9s forwards;
+background:rgba(20,15,10,0.95);border:1px solid var(--stone-line);color:var(--bone);
+font-size:12px;padding:8px 16px;border-radius:20px;animation:toastIn 0.25s ease, toastOut 0.3s ease 1.9s forwards;
 }
 @keyframes toastIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 @keyframes toastOut{to{opacity:0;}}
-
 @media (prefers-reduced-motion: reduce){
-  .hunt-emoji,.popup,.particle,.toast{animation:none !important;}
+.hunt-emoji,.popup,.particle,.toast{animation:none !important;}
 }
 </style>
 </head>
 <body>
 <div id="app">
+<!-- MAIN SCREEN -->
+<section id="screen-main" class="screen active">
+<div class="panel panel--stats">
+<div class="stats-title">BLANKET HUNT</div>
+<div class="stat-row"><span class="stat-icon">🪙</span><span id="stat-balance">0</span></div>
+<div class="stat-row small"><span class="stat-icon">🧸</span>Toys found: <span id="stat-toys">0</span></div>
+</div>
+<button class="shop-btn" id="btn-open-shop">Shop 🎁</button>
+<div class="hunt-area">
+<div class="hunt-hero">
+<span class="hunt-emoji">🧸</span>
+<div class="hunt-headline">Find a Toy!</div>
+<div class="hunt-sub">Dig through your blankets &amp; pillows. Find a toy, then scan it to earn coins!</div>
+</div>
+<div class="coin-guide">
+<div class="coin-tier">
+<span class="coin-tier-icon">🛏️</span>
+<span class="coin-tier-label">Blanket</span>
+<span class="coin-tier-amt">5–15</span>
+</div>
+<div class="coin-tier">
+<span class="coin-tier-icon">🪆</span>
+<span class="coin-tier-label">Simple toy</span>
+<span class="coin-tier-amt">20–50</span>
+</div>
+<div class="coin-tier">
+<span class="coin-tier-icon">🤖</span>
+<span class="coin-tier-label">Complex toy</span>
+<span class="coin-tier-amt">60–100</span>
+</div>
+</div>
+<div class="popups-layer" id="popups-layer"></div>
+</div>
+<div class="panel panel--potions" id="panel-potions">
+<div class="panel-label">Potions</div>
+<div id="potions-list"></div>
+</div>
+<div class="panel panel--effects" id="panel-effects">
+<div class="panel-label">Effects</div>
+<div id="effects-list"></div>
+</div>
+<button class="scan-btn" id="btn-open-sell">📸 Scan a Toy</button>
+</section>
 
-  <!-- MAIN SCREEN -->
-  <section id="screen-main" class="screen active">
-    <div class="panel panel--stats">
-      <div class="stats-title">BLANKET HUNT</div>
-      <div class="stat-row"><span class="stat-icon">🪙</span><span id="stat-balance">0</span></div>
-      <div class="stat-row small"><span class="stat-icon">🧸</span>Toys found: <span id="stat-toys">0</span></div>
-    </div>
+<!-- SHOP SCREEN -->
+<section id="screen-shop" class="screen">
+<button class="back-btn" id="btn-shop-back">← Back</button>
+<h1 class="screen-title">Shop</h1>
+<div class="potion-grid" id="potion-grid"></div>
+<button class="admin-trigger" id="btn-open-admin" aria-label="admin">⚙</button>
+</section>
 
-    <button class="shop-btn" id="btn-open-shop">Shop 🎁</button>
+<!-- ADMIN SCREEN -->
+<section id="screen-admin" class="screen">
+<button class="back-btn" id="btn-admin-back">← Back</button>
+<h1 class="screen-title admin-title">Curse Console</h1>
+<div class="admin-snapshot" id="admin-snapshot"></div>
+<div class="admin-form">
+<label>Stat to affect
+<select id="admin-stat">
+<option value="yield">Coin Multiplier</option>
+</select>
+</label>
+<label>Mode
+<select id="admin-mode">
+<option value="curse">Curse (bad)</option>
+<option value="blessing">Blessing (good)</option>
+</select>
+</label>
+<label>Strength
+<div class="pct-presets">
+<button type="button" class="pct-btn" data-pct="20">Mild · 20%</button>
+<button type="button" class="pct-btn" data-pct="50">Strong · 50%</button>
+<button type="button" class="pct-btn" data-pct="75">Severe · 75%</button>
+</div>
+<input type="number" id="admin-pct" value="30" min="1" max="95"/>
+</label>
+<label>Duration (minutes)
+<input type="number" id="admin-duration" value="10" min="1" max="1440"/>
+</label>
+<label>Custom label (optional)
+<input type="text" id="admin-label" placeholder="e.g. Cursed Blanket"/>
+</label>
+<button class="apply-btn" id="admin-apply-btn">Apply Effect</button>
+</div>
+<div class="admin-active-list" id="admin-active-list"></div>
+<button class="reset-btn" id="btn-reset-game">Reset all progress</button>
+</section>
 
-    <div class="hunt-area">
-      <div class="hunt-hero">
-        <span class="hunt-emoji">🧸</span>
-        <div class="hunt-headline">Find a Toy!</div>
-        <div class="hunt-sub">Dig through your blankets &amp; pillows. Find a toy, then scan it to earn coins!</div>
-      </div>
+<!-- SCAN MODAL -->
+<div class="modal-overlay" id="sell-modal">
+<div class="modal-card">
+<button class="modal-close" id="btn-sell-close">✕</button>
+<h2>📸 Scan Your Find</h2>
+<p class="modal-hint">Point camera at your toy, blanket or pillow — bigger &amp; more complex = more coins!</p>
+<div class="sell-video-wrap" id="sell-video-wrap"><video id="sell-video" autoplay playsinline muted></video></div>
+<div class="sell-upload-wrap" id="sell-upload-wrap">
+<label class="upload-label">Camera not available — take or choose a photo instead
+<input type="file" accept="image/*" capture="environment" id="sell-file-input"/>
+</label>
+</div>
+<button class="capture-btn" id="sell-capture-btn">📸 Scan &amp; Identify</button>
+<div class="sell-loading" id="sell-loading">🔍 Identifying your find...</div>
+<div class="sell-error" id="sell-error">Couldn't get a clear read — try better lighting and scan again.</div>
+<div class="sell-result" id="sell-result">
+<div class="appraisal-item"></div>
+<div class="appraisal-value"></div>
+<div class="appraisal-blurb"></div>
+<div class="sell-result-actions">
+<button id="sell-accept-btn" class="accept-btn">Collect Coins!</button>
+<button id="sell-retake-btn" class="retake-btn">Rescan</button>
+</div>
+</div>
+</div>
+</div>
 
-      <div class="coin-guide">
-        <div class="coin-tier">
-          <span class="coin-tier-icon">🛏️</span>
-          <span class="coin-tier-label">Blanket</span>
-          <span class="coin-tier-amt">5–15</span>
-        </div>
-        <div class="coin-tier">
-          <span class="coin-tier-icon">🪆</span>
-          <span class="coin-tier-label">Simple toy</span>
-          <span class="coin-tier-amt">20–50</span>
-        </div>
-        <div class="coin-tier">
-          <span class="coin-tier-icon">🤖</span>
-          <span class="coin-tier-label">Complex toy</span>
-          <span class="coin-tier-amt">60–100</span>
-        </div>
-      </div>
-
-      <div class="popups-layer" id="popups-layer"></div>
-    </div>
-
-    <div class="panel panel--potions" id="panel-potions">
-      <div class="panel-label">Potions</div>
-      <div id="potions-list"></div>
-    </div>
-    <div class="panel panel--effects" id="panel-effects">
-      <div class="panel-label">Effects</div>
-      <div id="effects-list"></div>
-    </div>
-
-    <button class="scan-btn" id="btn-open-sell">📸 Scan a Toy</button>
-  </section>
-
-  <!-- SHOP SCREEN -->
-  <section id="screen-shop" class="screen">
-    <button class="back-btn" id="btn-shop-back">← Back</button>
-    <h1 class="screen-title">Shop</h1>
-    <div class="potion-grid" id="potion-grid"></div>
-    <button class="admin-trigger" id="btn-open-admin" aria-label="admin">⚙</button>
-  </section>
-
-  <!-- ADMIN SCREEN -->
-  <section id="screen-admin" class="screen">
-    <button class="back-btn" id="btn-admin-back">← Back</button>
-    <h1 class="screen-title admin-title">Curse Console</h1>
-    <div class="admin-snapshot" id="admin-snapshot"></div>
-    <div class="admin-form">
-      <label>Stat to affect
-        <select id="admin-stat">
-          <option value="yield">Coin Multiplier</option>
-        </select>
-      </label>
-      <label>Mode
-        <select id="admin-mode">
-          <option value="curse">Curse (bad)</option>
-          <option value="blessing">Blessing (good)</option>
-        </select>
-      </label>
-      <label>Strength
-        <div class="pct-presets">
-          <button type="button" class="pct-btn" data-pct="20">Mild · 20%</button>
-          <button type="button" class="pct-btn" data-pct="50">Strong · 50%</button>
-          <button type="button" class="pct-btn" data-pct="75">Severe · 75%</button>
-        </div>
-        <input type="number" id="admin-pct" value="30" min="1" max="95"/>
-      </label>
-      <label>Duration (minutes)
-        <input type="number" id="admin-duration" value="10" min="1" max="1440"/>
-      </label>
-      <label>Custom label (optional)
-        <input type="text" id="admin-label" placeholder="e.g. Cursed Blanket"/>
-      </label>
-      <button class="apply-btn" id="admin-apply-btn">Apply Effect</button>
-    </div>
-    <div class="admin-active-list" id="admin-active-list"></div>
-    <button class="reset-btn" id="btn-reset-game">Reset all progress</button>
-  </section>
-
-  <!-- SCAN MODAL -->
-  <div class="modal-overlay" id="sell-modal">
-    <div class="modal-card">
-      <button class="modal-close" id="btn-sell-close">✕</button>
-      <h2>📸 Scan Your Find</h2>
-      <p class="modal-hint">Point camera at your toy, blanket or pillow — bigger &amp; more complex = more coins!</p>
-      <div class="sell-video-wrap" id="sell-video-wrap"><video id="sell-video" autoplay playsinline muted></video></div>
-      <div class="sell-upload-wrap" id="sell-upload-wrap">
-        <label class="upload-label">Camera not available — take or choose a photo instead
-          <input type="file" accept="image/*" capture="environment" id="sell-file-input"/>
-        </label>
-      </div>
-      <button class="capture-btn" id="sell-capture-btn">📸 Scan &amp; Identify</button>
-      <div class="sell-loading" id="sell-loading">🔍 Identifying your find...</div>
-      <div class="sell-error" id="sell-error">Couldn't get a clear read — try better lighting and scan again.</div>
-      <div class="sell-result" id="sell-result">
-        <div class="appraisal-item"></div>
-        <div class="appraisal-value"></div>
-        <div class="appraisal-blurb"></div>
-        <div class="sell-result-actions">
-          <button id="sell-accept-btn" class="accept-btn">Collect Coins!</button>
-          <button id="sell-retake-btn" class="retake-btn">Rescan</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="toast-layer" id="toast-layer"></div>
+<div class="toast-layer" id="toast-layer"></div>
 </div>
 
 <script>
@@ -429,9 +401,9 @@ const STORE_PLAYER='blanket:player';
 const STORE_EFFECTS='blanket:effects';
 
 const POTIONS=[
-  {id:'lucky', name:'Lucky Eye Potion', icon:'🍀', stat:'yield', multiplier:1.6, durationMin:5, baseCost:40, desc:'+60% coins from every scan'},
-  {id:'eagle', name:'Eagle Eye Potion', icon:'🦅', stat:'yield', multiplier:2.0, durationMin:3, baseCost:70, desc:'Double coins for 3 minutes!'},
-  {id:'gem',   name:'Gem Sense Potion', icon:'💎', stat:'yield', multiplier:1.3, durationMin:10, baseCost:30, desc:'+30% coins, lasts 10 minutes'}
+{id:'lucky', name:'Lucky Eye Potion', icon:'🍀', stat:'yield', multiplier:1.6, durationMin:5, baseCost:40, desc:'+60% coins from every scan'},
+{id:'eagle', name:'Eagle Eye Potion', icon:'🦅', stat:'yield', multiplier:2.0, durationMin:3, baseCost:70, desc:'Double coins for 3 minutes!'},
+{id:'gem', name:'Gem Sense Potion', icon:'💎', stat:'yield', multiplier:1.3, durationMin:10, baseCost:30, desc:'+30% coins, lasts 10 minutes'}
 ];
 
 /* ===================== STATE ===================== */
@@ -444,277 +416,286 @@ let pendingAppraisal=null;
 
 /* ===================== STORAGE HELPERS ===================== */
 async function storageGet(key, fallback){
-  try{
-    if(!window.storage) return fallback;
-    const res=await window.storage.get(key, false);
-    return res ? JSON.parse(res.value) : fallback;
-  }catch(e){ return fallback; }
+try{
+if(!window.storage) return fallback;
+const res=await window.storage.get(key, false);
+return res ? JSON.parse(res.value) : fallback;
+}catch(e){ return fallback; }
 }
 async function storageSet(key, value){
-  try{
-    if(!window.storage) return;
-    await window.storage.set(key, JSON.stringify(value), false);
-  }catch(e){ /* keep playing locally even if storage fails */ }
+try{
+if(!window.storage) return;
+await window.storage.set(key, JSON.stringify(value), false);
+}catch(e){ /* keep playing locally even if storage fails */ }
 }
 
 function defaultPlayer(){
-  return {balance:0, toysFound:0, potionPurchases:{}};
+return {balance:0, toysFound:0, potionPurchases:{}};
 }
 
 function persistPlayerNow(){
-  if(saveTimer){ clearTimeout(saveTimer); saveTimer=null; }
-  storageSet(STORE_PLAYER, player);
+if(saveTimer){ clearTimeout(saveTimer); saveTimer=null; }
+storageSet(STORE_PLAYER, player);
 }
 function persistPlayerDebounced(){
-  if(saveTimer) return;
-  saveTimer=setTimeout(()=>{ storageSet(STORE_PLAYER, player); saveTimer=null; }, 1200);
+if(saveTimer) return;
+saveTimer=setTimeout(()=>{ storageSet(STORE_PLAYER, player); saveTimer=null; }, 1200);
 }
 
 /* ===================== UTIL ===================== */
 function uid(){ return Math.random().toString(36).slice(2)+Date.now().toString(36); }
 function clamp(n,min,max){ return Math.min(max,Math.max(min,n)); }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 function fmtTime(ms){
-  if(ms<0) ms=0;
-  const s=Math.ceil(ms/1000);
-  const m=Math.floor(s/60);
-  const sec=s%60;
-  return m+':'+String(sec).padStart(2,'0');
+if(ms<0) ms=0;
+const s=Math.ceil(ms/1000);
+const m=Math.floor(s/60);
+const sec=s%60;
+return m+':'+String(sec).padStart(2,'0');
 }
 function escapeHtml(str){
-  const d=document.createElement('div');
-  d.textContent=str==null?'':String(str);
-  return d.innerHTML;
+const d=document.createElement('div');
+d.textContent=str==null?'':String(str);
+return d.innerHTML;
 }
 function toast(msg){
-  const layer=document.getElementById('toast-layer');
-  const el=document.createElement('div');
-  el.className='toast';
-  el.textContent=msg;
-  layer.appendChild(el);
-  setTimeout(()=>el.remove(), 2300);
+const layer=document.getElementById('toast-layer');
+const el=document.createElement('div');
+el.className='toast';
+el.textContent=msg;
+layer.appendChild(el);
+setTimeout(()=>el.remove(), 2300);
 }
 
 /* ===================== EFFECTIVE STATS ===================== */
 function getEffectiveStats(){
-  const now=Date.now();
-  let yieldMult=1;
-  effects.filter(e=>e.expiresAt>now).forEach(e=>{
-    if(e.stat==='yield') yieldMult*=e.multiplier;
-  });
-  return { yieldMult };
+const now=Date.now();
+let yieldMult=1;
+effects.filter(e=>e.expiresAt>now).forEach(e=>{
+if(e.stat==='yield') yieldMult*=e.multiplier;
+});
+return { yieldMult };
 }
 
 /* ===================== RENDER: MAIN STATS ===================== */
 function updateStatsDisplay(){
-  document.getElementById('stat-balance').textContent=player.balance;
-  document.getElementById('stat-toys').textContent=player.toysFound;
+document.getElementById('stat-balance').textContent=player.balance;
+document.getElementById('stat-toys').textContent=player.toysFound;
 }
 
 /* ===================== RENDER: EFFECT PANELS ===================== */
 function renderEffectBadges(containerId, source, emptyText){
-  const now=Date.now();
-  const list=effects.filter(e=>e.source===source && e.expiresAt>now);
-  const el=document.getElementById(containerId);
-  if(!list.length){
-    el.innerHTML='<div class="badge-empty">'+emptyText+'</div>';
-    return;
-  }
-  el.innerHTML=list.map(e=>
-    '<div class="badge"><span class="badge-icon">'+e.icon+'</span>'+
-    '<span class="badge-name">'+escapeHtml(e.name)+'</span>'+
-    '<span class="badge-time">'+fmtTime(e.expiresAt-Date.now())+'</span></div>'
-  ).join('');
+const now=Date.now();
+const list=effects.filter(e=>e.source===source && e.expiresAt>now);
+const el=document.getElementById(containerId);
+if(!list.length){
+el.innerHTML='<div class="badge-empty">'+emptyText+'</div>';
+return;
+}
+el.innerHTML=list.map(e=>
+'<div class="badge"><span class="badge-icon">'+e.icon+'</span>'+
+'<span class="badge-name">'+escapeHtml(e.name)+'</span>'+
+'<span class="badge-time">'+fmtTime(e.expiresAt-Date.now())+'</span></div>'
+).join('');
 }
 
 function tickEffects(){
-  const now=Date.now();
-  const before=effects.length;
-  effects=effects.filter(e=>e.expiresAt>now);
-  if(effects.length!==before) storageSet(STORE_EFFECTS, effects);
-  renderEffectBadges('potions-list','potion','No potions active');
-  renderEffectBadges('effects-list','admin','No curses active');
-  updateStatsDisplay();
-  if(document.getElementById('screen-admin').classList.contains('active')) renderAdminActiveList();
+const now=Date.now();
+const before=effects.length;
+effects=effects.filter(e=>e.expiresAt>now);
+if(effects.length!==before) storageSet(STORE_EFFECTS, effects);
+renderEffectBadges('potions-list','potion','No potions active');
+renderEffectBadges('effects-list','admin','No curses active');
+updateStatsDisplay();
+if(document.getElementById('screen-admin').classList.contains('active')) renderAdminActiveList();
 }
 
 /* ===================== COIN POPUPS ===================== */
 function spawnPopup(text){
-  const layer=document.getElementById('popups-layer');
-  const el=document.createElement('div');
-  el.className='popup';
-  el.textContent=text;
-  layer.appendChild(el);
-  setTimeout(()=>el.remove(), 950);
+const layer=document.getElementById('popups-layer');
+const el=document.createElement('div');
+el.className='popup';
+el.textContent=text;
+layer.appendChild(el);
+setTimeout(()=>el.remove(), 950);
 }
 function spawnBurst(){
-  const layer=document.getElementById('popups-layer');
-  for(let i=0;i<10;i++){
-    const el=document.createElement('div');
-    el.className='particle';
-    el.textContent='🪙';
-    const angle=Math.random()*Math.PI*2;
-    const dist=50+Math.random()*60;
-    el.style.setProperty('--bx', (Math.cos(angle)*dist)+'px');
-    el.style.setProperty('--by', (Math.sin(angle)*dist)+'px');
-    layer.appendChild(el);
-    setTimeout(()=>el.remove(), 650);
-  }
+const layer=document.getElementById('popups-layer');
+for(let i=0;i<10;i++){
+const el=document.createElement('div');
+el.className='particle';
+el.textContent='🪙';
+const angle=Math.random()*Math.PI*2;
+const dist=50+Math.random()*60;
+el.style.setProperty('--bx', (Math.cos(angle)*dist)+'px');
+el.style.setProperty('--by', (Math.sin(angle)*dist)+'px');
+layer.appendChild(el);
+setTimeout(()=>el.remove(), 650);
+}
 }
 
 /* ===================== SHOP ===================== */
 function potionCost(p){
-  const count=player.potionPurchases[p.id]||0;
-  return Math.round(p.baseCost*Math.pow(1.15,count));
+const count=player.potionPurchases[p.id]||0;
+return Math.round(p.baseCost*Math.pow(1.15,count));
 }
+
 function renderShop(){
-  const grid=document.getElementById('potion-grid');
-  grid.innerHTML=POTIONS.map(p=>{
-    const cost=potionCost(p);
-    const affordable=player.balance>=cost;
-    return '<div class="potion-card'+(affordable?'':' unaffordable')+'" data-id="'+p.id+'">'+
-      '<div class="potion-icon">'+p.icon+'</div>'+
-      '<div class="potion-name">'+escapeHtml(p.name)+'</div>'+
-      '<div class="potion-desc">'+escapeHtml(p.desc)+'</div>'+
-      '<div class="potion-duration">Lasts '+p.durationMin+' min</div>'+
-      '<button class="potion-buy" data-id="'+p.id+'">'+cost+' 🪙</button>'+
-    '</div>';
-  }).join('');
-  grid.querySelectorAll('.potion-buy').forEach(btn=>{
-    btn.addEventListener('click', ()=>buyPotion(btn.getAttribute('data-id')));
-  });
+const grid=document.getElementById('potion-grid');
+grid.innerHTML=POTIONS.map(p=>{
+const cost=potionCost(p);
+const affordable=player.balance>=cost;
+return '<div class="potion-card'+(affordable?'':' unaffordable')+'" data-id="'+p.id+'">'+
+'<div class="potion-icon">'+p.icon+'</div>'+
+'<div class="potion-name">'+escapeHtml(p.name)+'</div>'+
+'<div class="potion-desc">'+escapeHtml(p.desc)+'</div>'+
+'<div class="potion-duration">Lasts '+p.durationMin+' min</div>'+
+'<button class="potion-buy" data-id="'+p.id+'">'+cost+' 🪙</button>'+
+'</div>';
+}).join('');
+grid.querySelectorAll('.potion-buy').forEach(btn=>{
+btn.addEventListener('click', ()=>buyPotion(btn.getAttribute('data-id')));
+});
 }
+
 function buyPotion(id){
-  const p=POTIONS.find(x=>x.id===id);
-  if(!p) return;
-  const cost=potionCost(p);
-  if(player.balance<cost){ toast('Not enough coins — scan more toys!'); return; }
-  player.balance-=cost;
-  player.potionPurchases[id]=(player.potionPurchases[id]||0)+1;
-  const now=Date.now();
-  const durationMs=p.durationMin*60000;
-  const existing=effects.find(e=>e.potionId===p.id && e.expiresAt>now);
-  if(existing){
-    existing.expiresAt=now+durationMs;
-  }else{
-    effects.push({id:uid(), source:'potion', potionId:p.id, name:p.name, icon:p.icon, stat:p.stat, multiplier:p.multiplier, createdAt:now, expiresAt:now+durationMs});
-  }
-  persistPlayerNow();
-  storageSet(STORE_EFFECTS, effects);
-  renderShop();
-  tickEffects();
-  toast(p.name+' activated!');
+const p=POTIONS.find(x=>x.id===id);
+if(!p) return;
+const cost=potionCost(p);
+if(player.balance<cost){ toast('Not enough coins — scan more toys!'); return; }
+player.balance-=cost;
+player.potionPurchases[id]=(player.potionPurchases[id]||0)+1;
+const now=Date.now();
+const durationMs=p.durationMin*60000;
+const existing=effects.find(e=>e.potionId===p.id && e.expiresAt>now);
+if(existing){
+existing.expiresAt=now+durationMs;
+}else{
+effects.push({id:uid(), source:'potion', potionId:p.id, name:p.name, icon:p.icon, stat:p.stat, multiplier:p.multiplier, createdAt:now, expiresAt:now+durationMs});
+}
+persistPlayerNow();
+storageSet(STORE_EFFECTS, effects);
+renderShop();
+tickEffects();
+toast(p.name+' activated!');
 }
 
 /* ===================== ADMIN ===================== */
 function renderAdminSnapshot(){
-  const stats=getEffectiveStats();
-  document.getElementById('admin-snapshot').innerHTML=
-    '<span>🪙 '+player.balance+'</span><span>🧸 Toys '+player.toysFound+'</span><span>✨ Multiplier ×'+stats.yieldMult.toFixed(2)+'</span>';
+const stats=getEffectiveStats();
+document.getElementById('admin-snapshot').innerHTML=
+'<span>🪙 '+player.balance+'</span><span>🧸 Toys '+player.toysFound+'</span><span>✨ Multiplier ×'+stats.yieldMult.toFixed(2)+'</span>';
 }
-function renderAdminActiveList(){
-  renderAdminSnapshot();
-  const now=Date.now();
-  const list=effects.filter(e=>e.expiresAt>now);
-  const el=document.getElementById('admin-active-list');
-  if(!list.length){ el.innerHTML='<div class="badge-empty">No active effects</div>'; return; }
-  el.innerHTML=list.map(e=>
-    '<div class="admin-effect-row is-'+e.source+'"><span>'+e.icon+' '+escapeHtml(e.name)+' — '+fmtTime(e.expiresAt-now)+'</span>'+
-    '<button class="cancel-btn" data-id="'+e.id+'">Cancel</button></div>'
-  ).join('');
-  el.querySelectorAll('.cancel-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>cancelEffect(btn.getAttribute('data-id')));
-  });
-}
-function cancelEffect(id){
-  effects=effects.filter(e=>e.id!==id);
-  storageSet(STORE_EFFECTS, effects);
-  renderAdminActiveList();
-  tickEffects();
-}
-function applyAdminEffect(){
-  const stat='yield';
-  const mode=document.getElementById('admin-mode').value;
-  const pct=clamp(Number(document.getElementById('admin-pct').value)||30, 1, 95);
-  const minutes=clamp(Number(document.getElementById('admin-duration').value)||10, 1, 1440);
-  const multiplier= mode==='curse' ? (1-pct/100) : (1+pct/100);
-  const defaultLabel = mode==='curse' ? 'Coin Curse' : 'Coin Blessing';
-  const labelInput=document.getElementById('admin-label');
-  const label=(labelInput.value||'').trim() || (defaultLabel+' ('+(mode==='curse'?'-':'+')+pct+'%)');
-  const icon = mode==='curse' ? '💀' : '✨';
 
-  effects.push({
-    id:uid(), source:'admin', name:label, icon, stat, multiplier,
-    createdAt:Date.now(), expiresAt:Date.now()+minutes*60000
-  });
-  storageSet(STORE_EFFECTS, effects);
-  renderAdminActiveList();
-  tickEffects();
-  labelInput.value='';
-  toast('Applied: '+label);
+function renderAdminActiveList(){
+renderAdminSnapshot();
+const now=Date.now();
+const list=effects.filter(e=>e.expiresAt>now);
+const el=document.getElementById('admin-active-list');
+if(!list.length){ el.innerHTML='<div class="badge-empty">No active effects</div>'; return; }
+el.innerHTML=list.map(e=>
+'<div class="admin-effect-row is-'+e.source+'"><span>'+e.icon+' '+escapeHtml(e.name)+' — '+fmtTime(e.expiresAt-now)+'</span>'+
+'<button class="cancel-btn" data-id="'+e.id+'">Cancel</button></div>'
+).join('');
+el.querySelectorAll('.cancel-btn').forEach(btn=>{
+btn.addEventListener('click', ()=>cancelEffect(btn.getAttribute('data-id')));
+});
 }
+
+function cancelEffect(id){
+effects=effects.filter(e=>e.id!==id);
+storageSet(STORE_EFFECTS, effects);
+renderAdminActiveList();
+tickEffects();
+}
+
+function applyAdminEffect(){
+const stat='yield';
+const mode=document.getElementById('admin-mode').value;
+const pct=clamp(Number(document.getElementById('admin-pct').value)||30, 1, 95);
+const minutes=clamp(Number(document.getElementById('admin-duration').value)||10, 1, 1440);
+const multiplier= mode==='curse' ? (1-pct/100) : (1+pct/100);
+const defaultLabel = mode==='curse' ? 'Coin Curse' : 'Coin Blessing';
+const labelInput=document.getElementById('admin-label');
+const label=(labelInput.value||'').trim() || (defaultLabel+' ('+(mode==='curse'?'-':'+')+pct+'%)');
+const icon = mode==='curse' ? '💀' : '✨';
+effects.push({
+id:uid(), source:'admin', name:label, icon, stat, multiplier,
+createdAt:Date.now(), expiresAt:Date.now()+minutes*60000
+});
+storageSet(STORE_EFFECTS, effects);
+renderAdminActiveList();
+tickEffects();
+labelInput.value='';
+toast('Applied: '+label);
+}
+
 function resetGame(){
-  if(!confirm('Reset all progress? This cannot be undone.')) return;
-  player=defaultPlayer();
-  effects=[];
-  storageSet(STORE_PLAYER, player);
-  storageSet(STORE_EFFECTS, effects);
-  renderAll();
-  toast('Progress reset');
+if(!confirm('Reset all progress? This cannot be undone.')) return;
+player=defaultPlayer();
+effects=[];
+storageSet(STORE_PLAYER, player);
+storageSet(STORE_EFFECTS, effects);
+renderAll();
+toast('Progress reset');
 }
 
 /* ===================== SCREENS ===================== */
 function showScreen(name){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('screen-'+name).classList.add('active');
-  if(name==='shop') renderShop();
-  if(name==='admin') renderAdminActiveList();
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+document.getElementById('screen-'+name).classList.add('active');
+if(name==='shop') renderShop();
+if(name==='admin') renderAdminActiveList();
 }
 
 /* ===================== SCAN / APPRAISAL ===================== */
 function resetSellUI(){
-  document.getElementById('sell-result').style.display='none';
-  document.getElementById('sell-error').style.display='none';
-  document.getElementById('sell-loading').style.display='none';
-  document.getElementById('sell-capture-btn').style.display = cameraMode==='live' ? 'block' : 'none';
-  document.getElementById('sell-file-input').value='';
-  pendingAppraisal=null;
+document.getElementById('sell-result').style.display='none';
+document.getElementById('sell-error').style.display='none';
+document.getElementById('sell-loading').style.display='none';
+document.getElementById('sell-capture-btn').style.display = cameraMode==='live' ? 'block' : 'none';
+document.getElementById('sell-file-input').value='';
+pendingAppraisal=null;
 }
+
 async function openSellModal(){
-  document.getElementById('sell-modal').classList.add('open');
-  resetSellUI();
-  const videoWrap=document.getElementById('sell-video-wrap');
-  const uploadWrap=document.getElementById('sell-upload-wrap');
-  try{
-    mediaStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
-    const video=document.getElementById('sell-video');
-    video.srcObject=mediaStream;
-    await video.play();
-    cameraMode='live';
-    videoWrap.style.display='block';
-    uploadWrap.style.display='none';
-    document.getElementById('sell-capture-btn').style.display='block';
-  }catch(err){
-    cameraMode='upload';
-    videoWrap.style.display='none';
-    uploadWrap.style.display='block';
-    document.getElementById('sell-capture-btn').style.display='none';
-  }
+document.getElementById('sell-modal').classList.add('open');
+resetSellUI();
+const videoWrap=document.getElementById('sell-video-wrap');
+const uploadWrap=document.getElementById('sell-upload-wrap');
+try{
+mediaStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
+const video=document.getElementById('sell-video');
+video.srcObject=mediaStream;
+await video.play();
+cameraMode='live';
+videoWrap.style.display='block';
+uploadWrap.style.display='none';
+document.getElementById('sell-capture-btn').style.display='block';
+}catch(err){
+cameraMode='upload';
+videoWrap.style.display='none';
+uploadWrap.style.display='block';
+document.getElementById('sell-capture-btn').style.display='none';
 }
+}
+
 function closeSellModal(){
-  document.getElementById('sell-modal').classList.remove('open');
-  if(mediaStream){ mediaStream.getTracks().forEach(t=>t.stop()); mediaStream=null; }
-  resetSellUI();
+document.getElementById('sell-modal').classList.remove('open');
+if(mediaStream){ mediaStream.getTracks().forEach(t=>t.stop()); mediaStream=null; }
+resetSellUI();
 }
+
 function captureToBase64(sourceEl, maxDim){
-  const cw=sourceEl.videoWidth || sourceEl.naturalWidth || sourceEl.width;
-  const ch=sourceEl.videoHeight || sourceEl.naturalHeight || sourceEl.height;
-  const scale=Math.min(1, maxDim/Math.max(cw,ch));
-  const canvas=document.createElement('canvas');
-  canvas.width=Math.max(1,Math.round(cw*scale));
-  canvas.height=Math.max(1,Math.round(ch*scale));
-  const ctx=canvas.getContext('2d');
-  ctx.drawImage(sourceEl, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL('image/jpeg', 0.82).split(',')[1];
+const cw=sourceEl.videoWidth || sourceEl.naturalWidth || sourceEl.width;
+const ch=sourceEl.videoHeight || sourceEl.naturalHeight || sourceEl.height;
+const scale=Math.min(1, maxDim/Math.max(cw,ch));
+const canvas=document.createElement('canvas');
+canvas.width=Math.max(1,Math.round(cw*scale));
+canvas.height=Math.max(1,Math.round(ch*scale));
+const ctx=canvas.getContext('2d');
+ctx.drawImage(sourceEl, 0, 0, canvas.width, canvas.height);
+return canvas.toDataURL('image/jpeg', 0.82).split(',')[1];
 }
 
 const VISION_KEY='AIzaSyBgMaqQk2tP28GSQ8hIatcOaJg9MfGY5Ik';
@@ -725,182 +706,180 @@ const MEDIUM_TOY_WORDS=['doll','action figure','figurine','puppet','barbie','ted
 const BLANKET_WORDS=['blanket','pillow','cushion','quilt','duvet','bedding','towel','cloth','fabric','sheet','comforter','throw'];
 
 function scoreFromLabels(labels){
-  const text=labels.map(l=>l.description.toLowerCase()).join(' ');
-
-  // Check blanket/pillow first
-  if(BLANKET_WORDS.some(w=>text.includes(w))){
-    return {type:'blanket', value:randInt(5,15)};
-  }
-  // Complex toy
-  if(COMPLEX_TOY_WORDS.some(w=>text.includes(w))){
-    return {type:'complex_toy', value:randInt(71,100)};
-  }
-  // Medium toy
-  if(MEDIUM_TOY_WORDS.some(w=>text.includes(w))){
-    return {type:'medium_toy', value:randInt(46,70)};
-  }
-  // If "toy" or "game" appears at all
-  if(text.includes('toy') || text.includes('game') || text.includes('play')){
-    return {type:'simple_toy', value:randInt(20,45)};
-  }
-  // Anything else found — treat as simple toy
-  return {type:'simple_toy', value:randInt(15,35)};
+const text=labels.map(l=>l.description.toLowerCase()).join(' ');
+// Check blanket/pillow first
+if(BLANKET_WORDS.some(w=>text.includes(w))){
+return {type:'blanket', value:randInt(5,15)};
+}
+// Complex toy
+if(COMPLEX_TOY_WORDS.some(w=>text.includes(w))){
+return {type:'complex_toy', value:randInt(71,100)};
+}
+// Medium toy
+if(MEDIUM_TOY_WORDS.some(w=>text.includes(w))){
+return {type:'medium_toy', value:randInt(46,70)};
+}
+// If "toy" or "game" appears at all
+if(text.includes('toy') || text.includes('game') || text.includes('play')){
+return {type:'simple_toy', value:randInt(20,45)};
+}
+// Anything else found — treat as simple toy, but flag it as a generic guess
+// (Vision can only describe what it visually sees — a toy designed to look
+// like a real object, e.g. toy corn, will get labeled as the real thing)
+return {type:'simple_toy', value:randInt(15,35), generic:true};
 }
 
 function blurbFor(type, item){
-  if(type==='blanket') return 'Cosy find, but the real treasure is hiding deeper!';
-  if(type==='complex_toy') return 'Whoa, a super complex toy — massive haul!';
-  if(type==='medium_toy') return 'Nice find! A solid toy discovery!';
-  return 'A fun little toy unearthed from the blanket pile!';
+if(type==='blanket') return 'Cosy find, but the real treasure is hiding deeper!';
+if(type==='complex_toy') return 'Whoa, a super complex toy — massive haul!';
+if(type==='medium_toy') return 'Nice find! A solid toy discovery!';
+return 'A fun little toy unearthed from the blanket pile!';
 }
 
 async function appraiseImage(base64){
-  const res=await fetch(
-    'https://vision.googleapis.com/v1/images:annotate?key='+VISION_KEY,
-    {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        requests:[{
-          image:{content:base64},
-          features:[
-            {type:'LABEL_DETECTION', maxResults:15},
-            {type:'OBJECT_LOCALIZATION', maxResults:10}
-          ]
-        }]
-      })
-    }
-  );
-  const data=await res.json();
-  if(data.error) throw new Error(data.error.message||'Vision API error');
+const res=await fetch(
+'https://vision.googleapis.com/v1/images:annotate?key='+VISION_KEY,
+{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+requests:[{
+image:{content:base64},
+features:[
+{type:'LABEL_DETECTION', maxResults:15},
+{type:'OBJECT_LOCALIZATION', maxResults:10}
+]
+}]
+})
+}
+);
+const data=await res.json();
+if(data.error) throw new Error(data.error.message||'Vision API error');
+const response=data.responses[0];
+const labels=[
+...(response.labelAnnotations||[]),
+...(response.localizedObjectAnnotations||[]).map(o=>({description:o.name, score:o.score}))
+];
+if(!labels.length) throw new Error('Nothing detected');
 
-  const response=data.responses[0];
-  const labels=[
-    ...(response.labelAnnotations||[]),
-    ...(response.localizedObjectAnnotations||[]).map(o=>({description:o.name, score:o.score}))
-  ];
-  if(!labels.length) throw new Error('Nothing detected');
+// Best label name for display
+const topLabel=labels[0].description;
+const {type, value: rawValue, generic}=scoreFromLabels(labels);
 
-  // Best label name for display
-  const topLabel=labels[0].description;
+// Apply active yield multiplier
+const stats=getEffectiveStats();
+const value=clamp(Math.round(rawValue * stats.yieldMult), 1, 500);
 
-  const {type, value: rawValue}=scoreFromLabels(labels);
-
-  // Apply active yield multiplier
-  const stats=getEffectiveStats();
-  const value=clamp(Math.round(rawValue * stats.yieldMult), 1, 500);
-
-  return {
-    item: topLabel,
-    value,
-    blurb: blurbFor(type, topLabel),
-    type
-  };
+return {
+// If Vision couldn't tie it to a recognizable toy category, show a
+// flavorful fallback name instead of the literal (often food/object) label
+item: generic ? 'Mystery Toy' : topLabel,
+value,
+blurb: blurbFor(type, topLabel),
+type
+};
 }
 
 async function runAppraisal(base64){
-  document.getElementById('sell-loading').style.display='block';
-  document.getElementById('sell-error').style.display='none';
-  document.getElementById('sell-result').style.display='none';
-  try{
-    const result=await appraiseImage(base64);
-    pendingAppraisal=result;
-    document.getElementById('sell-result').style.display='block';
-    document.querySelector('#sell-result .appraisal-item').textContent=result.item||'Mystery find';
-    document.querySelector('#sell-result .appraisal-value').textContent='+'+result.value+' 🪙';
-    document.querySelector('#sell-result .appraisal-blurb').textContent=result.blurb||'';
-  }catch(err){
-    document.getElementById('sell-error').style.display='block';
-  }finally{
-    document.getElementById('sell-loading').style.display='none';
-  }
+document.getElementById('sell-loading').style.display='block';
+document.getElementById('sell-error').style.display='none';
+document.getElementById('sell-result').style.display='none';
+try{
+const result=await appraiseImage(base64);
+pendingAppraisal=result;
+document.getElementById('sell-result').style.display='block';
+document.querySelector('#sell-result .appraisal-item').textContent=result.item||'Mystery find';
+document.querySelector('#sell-result .appraisal-value').textContent='+'+result.value+' 🪙';
+document.querySelector('#sell-result .appraisal-blurb').textContent=result.blurb||'';
+}catch(err){
+document.getElementById('sell-error').style.display='block';
+}finally{
+document.getElementById('sell-loading').style.display='none';
+}
 }
 
 /* ===================== SYNC POLLING ===================== */
 async function pollSync(){
-  try{
-    const remoteEffects=await storageGet(STORE_EFFECTS, null);
-    if(remoteEffects && JSON.stringify(remoteEffects)!==JSON.stringify(effects)){
-      effects=remoteEffects;
-      tickEffects();
-    }
-    const remotePlayer=await storageGet(STORE_PLAYER, null);
-    if(remotePlayer && JSON.stringify(remotePlayer)!==JSON.stringify(player)){
-      player=remotePlayer;
-      updateStatsDisplay();
-      renderShop();
-      if(document.getElementById('screen-admin').classList.contains('active')) renderAdminSnapshot();
-    }
-  }catch(e){ /* ignore transient sync errors */ }
+try{
+const remoteEffects=await storageGet(STORE_EFFECTS, null);
+if(remoteEffects && JSON.stringify(remoteEffects)!==JSON.stringify(effects)){
+effects=remoteEffects;
+tickEffects();
+}
+const remotePlayer=await storageGet(STORE_PLAYER, null);
+if(remotePlayer && JSON.stringify(remotePlayer)!==JSON.stringify(player)){
+player=remotePlayer;
+updateStatsDisplay();
+renderShop();
+if(document.getElementById('screen-admin').classList.contains('active')) renderAdminSnapshot();
+}
+}catch(e){ /* ignore transient sync errors */ }
 }
 
 /* ===================== RENDER ALL / INIT ===================== */
 function renderAll(){
-  updateStatsDisplay();
-  tickEffects();
-  renderShop();
+updateStatsDisplay();
+tickEffects();
+renderShop();
 }
 
 function wireEvents(){
-  document.getElementById('btn-open-shop').addEventListener('click', ()=>showScreen('shop'));
-  document.getElementById('btn-shop-back').addEventListener('click', ()=>showScreen('main'));
-  document.getElementById('btn-open-admin').addEventListener('click', ()=>showScreen('admin'));
-  document.getElementById('btn-admin-back').addEventListener('click', ()=>showScreen('shop'));
-  document.getElementById('btn-reset-game').addEventListener('click', resetGame);
-  document.getElementById('admin-apply-btn').addEventListener('click', applyAdminEffect);
-  document.querySelectorAll('.pct-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{ document.getElementById('admin-pct').value=btn.getAttribute('data-pct'); });
-  });
-
-  document.getElementById('btn-open-sell').addEventListener('click', openSellModal);
-  document.getElementById('btn-sell-close').addEventListener('click', closeSellModal);
-  document.getElementById('sell-capture-btn').addEventListener('click', ()=>{
-    const video=document.getElementById('sell-video');
-    const b64=captureToBase64(video, 800);
-    runAppraisal(b64);
-  });
-  document.getElementById('sell-file-input').addEventListener('change', (e)=>{
-    const file=e.target.files[0];
-    if(!file) return;
-    const reader=new FileReader();
-    reader.onload=()=>{
-      const img=new Image();
-      img.onload=()=>{
-        const b64=captureToBase64(img, 800);
-        runAppraisal(b64);
-      };
-      img.src=reader.result;
-    };
-    reader.readAsDataURL(file);
-  });
-  document.getElementById('sell-accept-btn').addEventListener('click', ()=>{
-    if(pendingAppraisal){
-      player.balance+=pendingAppraisal.value;
-      player.toysFound+=1;
-      persistPlayerNow();
-      updateStatsDisplay();
-      renderShop();
-      spawnPopup('+'+pendingAppraisal.value+' 🪙');
-      spawnBurst();
-      toast('Found '+pendingAppraisal.item+'! +'+pendingAppraisal.value+' coins!');
-    }
-    closeSellModal();
-  });
-  document.getElementById('sell-retake-btn').addEventListener('click', resetSellUI);
+document.getElementById('btn-open-shop').addEventListener('click', ()=>showScreen('shop'));
+document.getElementById('btn-shop-back').addEventListener('click', ()=>showScreen('main'));
+document.getElementById('btn-open-admin').addEventListener('click', ()=>showScreen('admin'));
+document.getElementById('btn-admin-back').addEventListener('click', ()=>showScreen('shop'));
+document.getElementById('btn-reset-game').addEventListener('click', resetGame);
+document.getElementById('admin-apply-btn').addEventListener('click', applyAdminEffect);
+document.querySelectorAll('.pct-btn').forEach(btn=>{
+btn.addEventListener('click', ()=>{ document.getElementById('admin-pct').value=btn.getAttribute('data-pct'); });
+});
+document.getElementById('btn-open-sell').addEventListener('click', openSellModal);
+document.getElementById('btn-sell-close').addEventListener('click', closeSellModal);
+document.getElementById('sell-capture-btn').addEventListener('click', ()=>{
+const video=document.getElementById('sell-video');
+const b64=captureToBase64(video, 800);
+runAppraisal(b64);
+});
+document.getElementById('sell-file-input').addEventListener('change', (e)=>{
+const file=e.target.files[0];
+if(!file) return;
+const reader=new FileReader();
+reader.onload=()=>{
+const img=new Image();
+img.onload=()=>{
+const b64=captureToBase64(img, 800);
+runAppraisal(b64);
+};
+img.src=reader.result;
+};
+reader.readAsDataURL(file);
+});
+document.getElementById('sell-accept-btn').addEventListener('click', ()=>{
+if(pendingAppraisal){
+player.balance+=pendingAppraisal.value;
+player.toysFound+=1;
+persistPlayerNow();
+updateStatsDisplay();
+renderShop();
+spawnPopup('+'+pendingAppraisal.value+' 🪙');
+spawnBurst();
+toast('Found '+pendingAppraisal.item+'! +'+pendingAppraisal.value+' coins!');
+}
+closeSellModal();
+});
+document.getElementById('sell-retake-btn').addEventListener('click', resetSellUI);
 }
 
 async function init(){
-  player=await storageGet(STORE_PLAYER, null) || defaultPlayer();
-  if(player.toysFound==null) player.toysFound=0;
-  if(player.potionPurchases==null) player.potionPurchases={};
-  effects=await storageGet(STORE_EFFECTS, null) || [];
-
-  wireEvents();
-  renderAll();
-  setInterval(tickEffects, 1000);
-  setInterval(pollSync, 4000);
+player=await storageGet(STORE_PLAYER, null) || defaultPlayer();
+if(player.toysFound==null) player.toysFound=0;
+if(player.potionPurchases==null) player.potionPurchases={};
+effects=await storageGet(STORE_EFFECTS, null) || [];
+wireEvents();
+renderAll();
+setInterval(tickEffects, 1000);
+setInterval(pollSync, 4000);
 }
-
 init();
 </script>
 </body>
